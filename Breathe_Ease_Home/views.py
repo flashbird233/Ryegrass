@@ -1,4 +1,4 @@
-# Breathe_Ease_home/views.py
+# Breathe_Ease_Home/views.py
 
 from django.shortcuts import render
 

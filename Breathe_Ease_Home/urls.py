@@ -1,4 +1,4 @@
-# Breathe_Ease_home/urls.py
+# Breathe_Ease_Home/urls.py
 
 from django.urls import path
 from .views import home

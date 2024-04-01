@@ -25,7 +25,7 @@ SECRET_KEY = 'django-insecure-^v1a=ii_4mrs769pwai-a@i#q2-z#4%*j*ia%qnoh(p=-7!%(l
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ["*"]
 
 
 # Application definition
@@ -37,7 +37,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    "Breathe_Ease_home.apps.Breathe_Ease_homeConfig"
+    "Breathe_Ease_Home.apps.BreatheEaseHomeConfig"
 ]
 
 MIDDLEWARE = [
@@ -55,7 +55,8 @@ ROOT_URLCONF = 'Ryegrass.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [BASE_DIR / 'templates']
+        'DIRS': [BASE_DIR / 'templates',
+                 BASE_DIR / 'Breathe_Ease_Home/templates']
         ,
         'APP_DIRS': True,
         'OPTIONS': {
@@ -75,13 +76,37 @@ WSGI_APPLICATION = 'Ryegrass.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/5.0/ref/settings/#databases
 
+# Database
+# https://docs.djangoproject.com/en/5.0/ref/settings/#databases
+
+# local database
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.mysql',
+#         'NAME': 'ryegrassdb',
+#         'USER': 'root',
+#         'PASSWORD': 'qwe123zxc',
+#         'HOST': 'localhost',
+#         'PORT': '3306',
+#     }
+# }
+
+# server database
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'ENGINE': 'django.db.backends.mysql',
+        'NAME': 'ryegrassdb',
+        'USER': 'jnhhpcgdav',
+        'PASSWORD': 'TP30ryegrass',
+        'HOST': 'ryegrass-server.mysql.database.azure.com',
+        'PORT': '3306',
+        # 'OPTIONS': {
+        #     'ssl': {
+        #         'ca': BASE_DIR / 'DigiCertGlobalRootCA.crt.pem'
+        #     }
+        # }
     }
 }
-
 
 # Password validation
 # https://docs.djangoproject.com/en/5.0/ref/settings/#auth-password-validators
@@ -107,7 +132,7 @@ AUTH_PASSWORD_VALIDATORS = [
 
 LANGUAGE_CODE = 'en-us'
 
-TIME_ZONE = 'UTC'
+TIME_ZONE = 'Australia/Melbourne'
 
 USE_I18N = True
 
@@ -118,6 +143,11 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/5.0/howto/static-files/
 
 STATIC_URL = 'static/'
+
+STATICFILES_DIRS = [
+    BASE_DIR / "static",
+    BASE_DIR / "Breathe_Ease_Home/static"
+]
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.0/ref/settings/#default-auto-field
