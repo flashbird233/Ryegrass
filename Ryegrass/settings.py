@@ -37,6 +37,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    "Breathe_Ease_home.apps.Breathe_Ease_homeConfig"
 ]
 
 MIDDLEWARE = [
