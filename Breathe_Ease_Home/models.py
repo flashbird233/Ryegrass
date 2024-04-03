@@ -14,9 +14,9 @@ class Location(models.Model):
     # state
     loc_state = models.CharField(max_length=4, default=None)
     # latitude
-    loc_latitude = models.FloatField(max_length=9, default=None)
+    loc_lat = models.FloatField(max_length=9, default=None)
     # longitude
-    loc_longitude = models.FloatField(max_length=9, default=None)
+    loc_long = models.FloatField(max_length=9, default=None)
 
     # return postcode
     def __str__(self):
