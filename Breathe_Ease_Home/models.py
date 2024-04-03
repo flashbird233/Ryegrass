@@ -33,7 +33,7 @@ class Ryegrass(models.Model):
     # longitude
     rye_lon = models.FloatField(max_length=10, default=None)
     # datetime
-    rye_datetime = models.DateTimeField(max_length=50, default=None, null=True)
+    rye_datetime = models.DateTimeField(default=None, null=True)
     # year
     rye_year = models.IntegerField(default=None, null=True,
                                    validators=[MinValueValidator(1000), MaxValueValidator(2021)])
