@@ -1,4 +1,3 @@
-from django.core.validators import MinValueValidator, MaxValueValidator
 from django.db import models
 
 
@@ -29,31 +28,20 @@ class Ryegrass(models.Model):
     # id
     rye_id = models.IntegerField(primary_key=True, auto_created=True, null=False)
     # latitude
-    rye_lat = models.FloatField(max_length=10, default=None)
+    rye_lat = models.FloatField(max_length=10, default=0, null=False)
     # longitude
-    rye_lon = models.FloatField(max_length=10, default=None)
-    # datetime
-    rye_datetime = models.DateTimeField(default=None, null=True)
-    # year
-    rye_year = models.IntegerField(default=None, null=True,
-                                   validators=[MinValueValidator(1000), MaxValueValidator(2021)])
-    # month
-    rye_month = models.IntegerField(default=None, null=True,
-                                    validators=[MinValueValidator(1), MaxValueValidator(12)])
-    # day
-    rye_day = models.IntegerField(default=None, null=True,
-                                  validators=[MinValueValidator(1), MaxValueValidator(31)])
+    rye_lon = models.FloatField(max_length=10, default=0, null=False)
     # rye_record_by
     rye_record_by = models.CharField(max_length=200, default=None, null=True)
-    # rye_country
-    rye_country = models.CharField(max_length=50, default=None, null=True)
-    # rye_country_code
-    rye_country_code = models.CharField(max_length=10, default=None, null=True)
+    # datetime
+    rye_date = models.DateTimeField(default=None, null=True)
     # rye_scientific_name
     rye_scientific_name = models.CharField(max_length=100, default=None, null=True)
     # rye_vernacular_name
     rye_vernacular_name = models.CharField(max_length=100, default=None, null=True)
+    # rye_taxon_concept_id
+    rye_taxon_concept_id = models.URLField(max_length=200, default=None, null=True)
 
     # return pyegrass record
     def __str__(self):
-        return self.rye_lat, ", ", self.rye_lon, ", ", self.rye_datetime
+        return self.rye_lat, ", ", self.rye_lon, ", ", self.rye_date
