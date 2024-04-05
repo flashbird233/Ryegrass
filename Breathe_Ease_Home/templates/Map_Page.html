@@ -38,10 +38,7 @@
                         lat: {{ location.rye_lat }}, lng: {{ location.rye_lon }}
                     },
                     map: map,
-                    title: '{{ location.rye_vernacular_name }}',
-                    icon: {
-                        scaledSize: new google.maps.Size(30, 30)
-                    }
+                    title: '{{ location.rye_vernacular_name }}'
                 });
             {% endfor %}
         }
