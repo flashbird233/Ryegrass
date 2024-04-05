@@ -1,17 +1,37 @@
+{% load static %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <title>Ryegrass Map and Route Suggestion</title>
+    {# Google Map API #}
     <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyA7Cnsz3PzLoUoFKL-Mow0AvTtoLd99drA&callback=initMap"
             async defer></script>
+    {# Google Map JS #}
     <script>
         function initMap() {
+            {#Define the Australia Boundary#}
+            var ausBounds = {
+                north: -9,
+                south: -45,
+                east: 155,
+                west: 111
+            }
+            {#Map Options#}
             var map = new google.maps.Map(document.getElementById('map'), {
-                zoom: 4,
-                center: {lat: -25.363, lng: 131.044}
+                zoom: 10,
+                center: {lat: -37.813611, lng: 144.963056},
+                streetViewControl: false,
+                minZoom: 4,
+                disableDefaultUI: true,
+                fullscreenControl: true,
+                restriction: {
+                    latLngBounds: ausBounds,
+                    strictBounds: true
+                }
             });
 
+            {#Show the Ryegrass location#}
             {% for location in locations %}
                 new google.maps.Marker({
                     position: {
@@ -27,5 +47,6 @@
 <body>
 <h1>My Map</h1>
 <div id="map" style="height: 400px; width: 600px;"></div>
+
 </body>
 </html>
