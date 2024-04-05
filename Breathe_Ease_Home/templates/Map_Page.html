@@ -5,10 +5,12 @@
     <meta charset="UTF-8">
     <title>Ryegrass Map and Route Suggestion</title>
     {# Google Map API #}
-    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyA7Cnsz3PzLoUoFKL-Mow0AvTtoLd99drA&callback=initMap"
-            async defer></script>
+    <script async
+            src="https://maps.googleapis.com/maps/api/js?key=AIzaSyA7Cnsz3PzLoUoFKL-Mow0AvTtoLd99drA&callback=initMap"></script>
     {# Google Map JS #}
     <script>
+        let map;
+
         function initMap() {
             {#Define the Australia Boundary#}
             var ausBounds = {
@@ -42,6 +44,8 @@
                 });
             {% endfor %}
         }
+
+        window.initMap = initmap;
     </script>
 </head>
 <body>
