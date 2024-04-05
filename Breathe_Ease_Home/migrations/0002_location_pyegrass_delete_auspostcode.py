@@ -5,7 +5,7 @@ from django.db import migrations, models
 
 class Migration(migrations.Migration):
     dependencies = [
-        ('Breathe_Ease', '0001_initial'),
+        ('Breathe_Ease_Home', '0001_initial'),
     ]
 
     operations = [

@@ -5,7 +5,7 @@ from django.db import migrations
 
 class Migration(migrations.Migration):
     dependencies = [
-        ('Breathe_Ease', '0002_location_pyegrass_delete_auspostcode'),
+        ('Breathe_Ease_Home', '0002_location_pyegrass_delete_auspostcode'),
     ]
 
     operations = [

@@ -6,7 +6,7 @@ from django.db import migrations, models
 
 class Migration(migrations.Migration):
     dependencies = [
-        ('Breathe_Ease', '0003_rename_loc_latitude_location_loc_lat_and_more'),
+        ('Breathe_Ease_Home', '0003_rename_loc_latitude_location_loc_lat_and_more'),
     ]
 
     operations = [

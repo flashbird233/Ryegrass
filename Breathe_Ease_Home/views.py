@@ -1,6 +1,8 @@
-# Breathe_Ease/views.py
+# Breathe_Ease_Home/views.py
 
 from django.shortcuts import render
+
+from Breathe_Ease_Home.models import Ryegrass
 
 
 def home(request):
@@ -8,8 +10,6 @@ def home(request):
 
 
 def rye_map(request):
-    locations = [
-        {'name': 'Location 1', 'lat': '-34.397', 'lng': '150.644'},
-        {'name': 'Location 2', 'lat': '-30.363', 'lng': '140.044'}
-    ]
+    # Get ryegrass locations from database
+    ryegrass = Ryegrass.objects.all()
     return render(request, 'Map_Page.html', {'locations': locations})
