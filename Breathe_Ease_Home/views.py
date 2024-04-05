@@ -1,6 +1,8 @@
 # Breathe_Ease_Home/views.py
 
+from dateutil.relativedelta import relativedelta
 from django.shortcuts import render
+from django.utils import timezone
 
 from Breathe_Ease_Home.models import Ryegrass
 
@@ -10,6 +12,8 @@ def home(request):
 
 
 def rye_map(request):
-    # Get ryegrass locations from database
-    ryegrass = Ryegrass.objects.all().values('rye_lat', 'rye_lon', 'rye_vernacular_name', 'rye_date')
+    # Only keep last 3 years data
+    now = timezone.now()
+    check_date = now - relativedelta(years=3)
+    ryegrass = Ryegrass.objects.filter(rye_date__gte=check_date).values('rye_lat', 'rye_lon', 'rye_vernacular_name')
     return render(request, 'Map_Page.html', {'locations': ryegrass})
