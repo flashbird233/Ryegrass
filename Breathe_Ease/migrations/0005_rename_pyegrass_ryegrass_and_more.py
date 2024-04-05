@@ -4,9 +4,8 @@ from django.db import migrations
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
-        ('Breathe_Ease_Home', '0004_pyegrass_pye_country_pyegrass_pye_country_code_and_more'),
+        ('Breathe_Ease', '0004_pyegrass_pye_country_pyegrass_pye_country_code_and_more'),
     ]
 
     operations = [

@@ -7,7 +7,7 @@ For more information on this file, see
 https://docs.djangoproject.com/en/5.0/topics/settings/
 
 For the full list of settings and their values, see
-https://docs.djangoproject.com/en/5.0/ref/settings/
+https://docs.djangoproject.com/en/5.0/ref/settings/   
 """
 
 from pathlib import Path
@@ -35,7 +35,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    "Breathe_Ease_Home.apps.BreatheEaseHomeConfig"
+    "Breathe_Ease.apps.BreatheEaseHomeConfig"
 ]
 
 MIDDLEWARE = [
@@ -54,7 +54,7 @@ TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
         'DIRS': [BASE_DIR / 'templates',
-                 BASE_DIR / 'Breathe_Ease_Home/templates'],
+                 BASE_DIR / 'Breathe_Ease/templates'],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -139,7 +139,7 @@ USE_TZ = True
 STATIC_URL = 'static/'
 
 STATICFILES_DIRS = [
-    BASE_DIR / "Breathe_Ease_Home/static"
+    BASE_DIR / "Breathe_Ease/static"
 ]
 
 STATIC_ROOT = BASE_DIR / "staticfiles"

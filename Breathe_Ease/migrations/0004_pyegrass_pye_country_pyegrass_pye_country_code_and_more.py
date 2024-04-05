@@ -5,9 +5,8 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
-        ('Breathe_Ease_Home', '0003_rename_loc_latitude_location_loc_lat_and_more'),
+        ('Breathe_Ease', '0003_rename_loc_latitude_location_loc_lat_and_more'),
     ]
 
     operations = [
@@ -24,12 +23,16 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='pyegrass',
             name='pye_day',
-            field=models.IntegerField(default=None, null=True, validators=[django.core.validators.MinValueValidator(1), django.core.validators.MaxValueValidator(31)]),
+            field=models.IntegerField(default=None, null=True, validators=[django.core.validators.MinValueValidator(1),
+                                                                           django.core.validators.MaxValueValidator(
+                                                                               31)]),
         ),
         migrations.AddField(
             model_name='pyegrass',
             name='pye_month',
-            field=models.IntegerField(default=None, null=True, validators=[django.core.validators.MinValueValidator(1), django.core.validators.MaxValueValidator(12)]),
+            field=models.IntegerField(default=None, null=True, validators=[django.core.validators.MinValueValidator(1),
+                                                                           django.core.validators.MaxValueValidator(
+                                                                               12)]),
         ),
         migrations.AddField(
             model_name='pyegrass',
@@ -49,7 +52,9 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='pyegrass',
             name='pye_year',
-            field=models.IntegerField(default=None, null=True, validators=[django.core.validators.MinValueValidator(1000), django.core.validators.MaxValueValidator(2021)]),
+            field=models.IntegerField(default=None, null=True,
+                                      validators=[django.core.validators.MinValueValidator(1000),
+                                                  django.core.validators.MaxValueValidator(2021)]),
         ),
         migrations.AlterField(
             model_name='pyegrass',

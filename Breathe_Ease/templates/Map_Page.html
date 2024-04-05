@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Ryegrass Map and Route Suggestion</title>
+    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyA7Cnsz3PzLoUoFKL-Mow0AvTtoLd99drA&callback=initMap"
+            async defer></script>
+    <script>
+        function initMap() {
+            var map = new google.maps.Map(document.getElementById('map'), {
+                zoom: 4,
+                center: {lat: -25.363, lng: 131.044}
+            });
+
+            {% for location in locations %}
+                new google.maps.Marker({
+                    position: {
+                        lat: {{location.lat}}, lng: {{ location.lng }}
+                    },
+                    map: map,
+                    title: '{{ location.name }}'
+                });
+            {% endfor %}
+        }
+    </script>
+</head>
+<body>
+<h1>My Map</h1>
+<div id="map" style="height: 400px; width: 600px;"></div>
+</body>
+</html>

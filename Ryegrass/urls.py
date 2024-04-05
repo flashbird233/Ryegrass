@@ -19,10 +19,11 @@ from django.conf.urls.static import static
 from django.contrib import admin
 from django.urls import path
 
-import Breathe_Ease_Home.views
+import Breathe_Ease.views
 
 urlpatterns = [
                   path('admin/', admin.site.urls),
-                  path('', Breathe_Ease_Home.views.home),  # Default path
-                  path('home/', Breathe_Ease_Home.views.home),
+                  path('', Breathe_Ease.views.home),  # Default path
+                  path('home/', Breathe_Ease.views.home),
+                  path('map/', Breathe_Ease.views.rye_map),
               ] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
