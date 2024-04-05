@@ -35,10 +35,10 @@
             {% for location in locations %}
                 new google.maps.Marker({
                     position: {
-                        lat: {{location.lat}}, lng: {{ location.lng }}
+                        lat: {{ location.rye_lat }}, lng: {{ location.rye_lon }}
                     },
                     map: map,
-                    title: '{{ location.name }}'
+                    title: '{{ location.rye_vernacular_name }}'
                 });
             {% endfor %}
         }

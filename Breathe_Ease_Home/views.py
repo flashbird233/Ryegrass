@@ -11,5 +11,5 @@ def home(request):
 
 def rye_map(request):
     # Get ryegrass locations from database
-    ryegrass = Ryegrass.objects.all()
-    return render(request, 'Map_Page.html', {'locations': locations})
+    ryegrass = Ryegrass.objects.all().values('rye_lat', 'rye_lon', 'rye_vernacular_name', 'rye_date')
+    return render(request, 'Map_Page.html', {'locations': ryegrass})

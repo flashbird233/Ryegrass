@@ -44,4 +44,4 @@ class Ryegrass(models.Model):
 
     # return pyegrass record
     def __str__(self):
-        return self.rye_lat, ", ", self.rye_lon, ", ", self.rye_date
+        return "{}, {}, {}".format(self.rye_lat, self.rye_lon, self.rye_date)
