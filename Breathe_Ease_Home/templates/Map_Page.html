@@ -9,7 +9,8 @@
             src="https://maps.googleapis.com/maps/api/js?key=AIzaSyA7Cnsz3PzLoUoFKL-Mow0AvTtoLd99drA&callback=initMap"></script>
     {# Google Map JS #}
     <script>
-        function initMap() {
+
+        async function initMap() {
             {#Define the Australia Boundary#}
             var ausBounds = {
                 north: -9,
@@ -18,7 +19,7 @@
                 west: 111
             }
             {#Map Options#}
-            var map = new google.maps.Map(document.getElementById('map'), {
+            const map = new google.maps.Map(document.getElementById('map'), {
                 zoom: 10,
                 center: {lat: -37.813611, lng: 144.963056},
                 streetViewControl: false,
@@ -38,7 +39,11 @@
                         lat: {{ location.rye_lat }}, lng: {{ location.rye_lon }}
                     },
                     map: map,
-                    title: '{{ location.rye_vernacular_name }}'
+                    title: '{{ location.rye_vernacular_name }}',
+                    icon: {
+                        url: "{% static 'images/map_icon.png' %}",
+                        scaledSize: new google.maps.Size(25, 25)
+                    }
                 });
             {% endfor %}
         }
