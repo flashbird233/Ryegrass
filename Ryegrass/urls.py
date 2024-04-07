@@ -29,4 +29,5 @@ urlpatterns = [
     re_path(r'static/(?P<path>.*)', serve, {"document_root": settings.STATIC_ROOT}, name="static"),
     path('cloth_edu/', Breathe_Ease_Home.views.cloth_edu),
     path('base/', Breathe_Ease_Home.views.base),
+    path('admin/update_ryedb', Breathe_Ease_Home.views.update_ryedb_admin)
 ]

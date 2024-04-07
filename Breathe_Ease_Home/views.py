@@ -1,5 +1,3 @@
-# Breathe_Ease_Home/views.py
-
 from dateutil.relativedelta import relativedelta
 from django.shortcuts import render
 from django.utils import timezone
@@ -26,3 +24,7 @@ def cloth_edu(request):
 
 def base(request):
     return render(request, 'base.html')
+
+
+def update_ryedb_admin(request):
+    return render(request, 'Admin_Updateryedb.html')

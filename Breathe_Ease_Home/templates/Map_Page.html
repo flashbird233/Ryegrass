@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <title>Ryegrass Map and Route Suggestion</title>
-    {# Google Map API #}
+    <!-- Google Map API -->
     <style>
         #find-me {
             background-image: url("{% static 'images/loc_button.png' %}");
@@ -29,17 +29,17 @@
 <!--The div element for the map-->
 <div id="map" style="height: 500px; width: 75%; margin: 0 auto"></div>
 
-{# Google Map JS #}
+<!-- Google Map JS -->
 <script>
     async function initMap() {
-        {#Define the Australia Boundary#}
+        /*Define the Australia Boundary*/
         var ausBounds = {
             north: -9,
             south: -45,
             east: 155,
             west: 111
         }
-        {#Map Options#}
+        /*Map Options*/
         const map = new google.maps.Map(document.getElementById('map'), {
             zoom: 10,
             center: {lat: -37.813611, lng: 144.963056},
@@ -53,13 +53,13 @@
             }
         });
 
-        {#Find me button#}
+        /*Find me button*/
         const locationButton = document.getElementById("find-me");
         locationButton.style.visibility = "visible";
         locationButton.classList.add("map-button");
         map.controls[google.maps.ControlPosition.RIGHT_TOP].push(locationButton);
 
-        {#Handle location error#}
+        /* Handle location error */
         locationButton.addEventListener("click", () => {
             if (navigator.geolocation) {
                 navigator.geolocation.getCurrentPosition(
@@ -81,7 +81,7 @@
             }
         });
 
-        {#Show the Ryegrass location#}
+        // Show the Ryegrass location
         {% for location in locations %}
             new google.maps.Marker({
                 position: {
@@ -98,7 +98,7 @@
     }
 </script>
 
-{#Load the Google Map API#}
+<!-- Load the Google Map API -->
 <script defer
         src="https://maps.googleapis.com/maps/api/js?key=AIzaSyA7Cnsz3PzLoUoFKL-Mow0AvTtoLd99drA&callback=initMap"></script>
 </body>
