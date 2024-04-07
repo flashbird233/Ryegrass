@@ -4,83 +4,116 @@
 <head>
     <meta charset="UTF-8">
     <title>Ryegrass Map and Route Suggestion</title>
-    {# Google Map CSS #}
-    <link rel="stylesheet" type="text/css" href="{% static 'css/map.css' %}">
-    <script src="{% static 'js/map.js' %}"></script>
+    {#    <link rel="stylesheet" type="text/css" href="{% static 'css/map.css' %}">#}
+    {#    <script src="{% static 'js/map.js' %}"></script>#}
     {# Google Map API #}
     <style>
-        #pac-input {
-            background-color: #fff;
-            font-family: Roboto;
-            font-size: 15px;
-            font-weight: 300;
-            margin-left: 12px;
-            padding: 0 11px 0 13px;
-            text-overflow: ellipsis;
-            width: 400px;
-        }
-
-        #pac-input:focus {
-            border-color: #4d90fe;
+        #find-me {
+            background-image: url("{% static 'images/loc_button.png' %}"); /* 图片路径替换为实际路径 */
+            background-size: contain; /* 或者可以使用contain，根据需求 */
+            border: none; /* 移除边框 */
+            padding: 0; /* 移除填充 */
+            width: 40px; /* 根据图片大小调整 */
+            height: 40px; /* 根据图片大小调整 */
+            cursor: pointer; /* 鼠标悬停时变成手形图标 */
+            color: transparent;
+            overflow: hidden;
         }
     </style>
-    {# Google Map JS #}
-    {#    <script>#}
-    {##}
-    {#        async function initMap() {#}
-    {#Define the Australia Boundary#}
-    {#            var ausBounds = {#}
-    {#                north: -9,#}
-    {#                south: -45,#}
-    {#                east: 155,#}
-    {#                west: 111#}
-    {#            }#}
-    {#Map Options#}
-    {#            const map = new google.maps.Map(document.getElementById('map'), {#}
-    {#                zoom: 10,#}
-    {#                center: {lat: -37.813611, lng: 144.963056},#}
-    {#                streetViewControl: false,#}
-    {#                minZoom: 4,#}
-    {#                disableDefaultUI: true,#}
-    {#                fullscreenControl: true,#}
-    {#                restriction: {#}
-    {#                    latLngBounds: ausBounds,#}
-    {#                    strictBounds: true#}
-    {#                }#}
-    {#            });#}
-    {##}
-    {#Show the Ryegrass location#}
-    {#            {% for location in locations %}#}
-    {#                new google.maps.Marker({#}
-    {#                    position: {#}
-    {#                        lat: {{ location.rye_lat }}, lng: {{ location.rye_lon }}#}
-    {#                    },#}
-    {#                    map: map,#}
-    {#                    title: '{{ location.rye_vernacular_name }}',#}
-    {#                    icon: {#}
-    {#                        url: "{% static 'images/map_icon.png' %}",#}
-    {#                        scaledSize: new google.maps.Size(30, 30)#}
-    {#                    }#}
-    {#                });#}
-    {#            {% endfor %}#}
-    {##}
-    {#            // Build the search box and link it to the html elements#}
-    {#            const input = document.getElementById('pac-input')#}
-    {#            const searchBox = new google.maps.places.SearchBox(input);#}
-    {##}
-    {#            // Add the search box to the map#}
-    {#            map.controls[google.maps.ControlPosition.TOP_LEFT].push(input);#}
-    {#        }#}
-    {#    </script>#}
+
 </head>
 <body>
 <h1>My Map</h1>
-<input id="pac-input" class="controls" type="text" placeholder="Search Box"/>
+{#<input id="pac-input" class="controls" type="text" placeholder="Search Box"/>#}
+<!-- A button to find the user's location -->
+<div id="find-me" style="margin: 0 auto; width: 40px; height: 40px;">
+    <button style="background-image: url('{% static 'images/loc_button.png' %}');">Find me</button>
+    {#    <p id="status"></p>#}
+    {#    <a id="map-link" target="_blank"></a>#}
+</div>
+<!--The div element for the map-->
 <div id="map" style="height: 500px; width: 75%; margin: 0 auto"></div>
-<script type='text/javascript'>
-    var locations = {{ locations|safe }};
+
+{# Google Map JS #}
+<script>
+    async function initMap() {
+        {#Define the Australia Boundary#}
+        var ausBounds = {
+            north: -9,
+            south: -45,
+            east: 155,
+            west: 111
+        }
+        {#Map Options#}
+        const map = new google.maps.Map(document.getElementById('map'), {
+            zoom: 10,
+            center: {lat: -37.813611, lng: 144.963056},
+            streetViewControl: false,
+            minZoom: 4,
+            disableDefaultUI: true,
+            fullscreenControl: true,
+            restriction: {
+                latLngBounds: ausBounds,
+                strictBounds: true
+            }
+        });
+
+        {#Show the Ryegrass location#}
+        {% for location in locations %}
+            new google.maps.Marker({
+                position: {
+                    lat: {{ location.rye_lat }}, lng: {{ location.rye_lon }}
+                },
+                map: map,
+                title: '{{ location.rye_vernacular_name }}',
+                icon: {
+                    url: "{% static 'images/map_icon.png' %}",
+                    scaledSize: new google.maps.Size(30, 30)
+                }
+            });
+        {% endfor %}
+
+        {#Find me button#}
+        const locationButton = document.getElementById("find-me");
+        {#locationButton.textContent = "Go to my location";#}
+        locationButton.classList.add("map-button");
+        map.controls[google.maps.ControlPosition.TOP_CENTER].push(locationButton);
+        locationButton.addEventListener("click", () => {
+            if (navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition(
+                    (position) => {
+                        const pos = {
+                            lat: position.coords.latitude,
+                            lng: position.coords.longitude,
+                        };
+                        map.setCenter(pos);
+                        map.setZoom(15);
+                    },
+                    () => {
+                        handleLocationError(true, infoWindow, map.getCenter());
+                    }
+                );
+            } else {
+                // Browser doesn't support Geolocation
+                handleLocationError(false, infoWindow, map.getCenter());
+            }
+        });
+
+        {#Find me button event listener#}
+
+        {#// Build the search box and link it to the html elements#}
+        {#const input = document.getElementById('pac-input')#}
+        {#const searchBox = new google.maps.places.SearchBox(input);#}
+        {##}
+        {#// Add the search box to the map#}
+        {#map.controls[google.maps.ControlPosition.TOP_LEFT].push(input);#}
+    }
 </script>
+
 {# Google Map API #}
+{#<script type="text/javascript">#}
+{#    var locations = {{ locations|safe }}#}
+{#</script>#}
 <script defer
         src="https://maps.googleapis.com/maps/api/js?key=AIzaSyA7Cnsz3PzLoUoFKL-Mow0AvTtoLd99drA&callback=initMap"></script>
 </body>
