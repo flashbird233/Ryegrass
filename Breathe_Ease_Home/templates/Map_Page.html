@@ -9,28 +9,26 @@
     {# Google Map API #}
     <style>
         #find-me {
-            background-image: url("{% static 'images/loc_button.png' %}"); /* 图片路径替换为实际路径 */
-            background-size: contain; /* 或者可以使用contain，根据需求 */
-            border: none; /* 移除边框 */
-            padding: 0; /* 移除填充 */
-            width: 40px; /* 根据图片大小调整 */
-            height: 40px; /* 根据图片大小调整 */
-            cursor: pointer; /* 鼠标悬停时变成手形图标 */
+            background-image: url("{% static 'images/loc_button.png' %}");
+            background-size: cover;
+            border: none;
+            padding: 0;
+            width: 40px;
+            height: 40px;
+            cursor: pointer;
             color: transparent;
             overflow: hidden;
+            margin-right: 10px;
+            background-color: white;
         }
     </style>
 
 </head>
 <body>
-<h1>My Map</h1>
+<h1 style="text-align: center">My Map</h1>
 {#<input id="pac-input" class="controls" type="text" placeholder="Search Box"/>#}
 <!-- A button to find the user's location -->
-<div id="find-me" style="margin: 0 auto; width: 40px; height: 40px;">
-    <button style="background-image: url('{% static 'images/loc_button.png' %}');">Find me</button>
-    {#    <p id="status"></p>#}
-    {#    <a id="map-link" target="_blank"></a>#}
-</div>
+<button id="find-me"></button>
 <!--The div element for the map-->
 <div id="map" style="height: 500px; width: 75%; margin: 0 auto"></div>
 
@@ -58,26 +56,13 @@
             }
         });
 
-        {#Show the Ryegrass location#}
-        {% for location in locations %}
-            new google.maps.Marker({
-                position: {
-                    lat: {{ location.rye_lat }}, lng: {{ location.rye_lon }}
-                },
-                map: map,
-                title: '{{ location.rye_vernacular_name }}',
-                icon: {
-                    url: "{% static 'images/map_icon.png' %}",
-                    scaledSize: new google.maps.Size(30, 30)
-                }
-            });
-        {% endfor %}
-
         {#Find me button#}
         const locationButton = document.getElementById("find-me");
-        {#locationButton.textContent = "Go to my location";#}
+        locationButton.style.visibility = "visible";
         locationButton.classList.add("map-button");
-        map.controls[google.maps.ControlPosition.TOP_CENTER].push(locationButton);
+        map.controls[google.maps.ControlPosition.RIGHT_TOP].push(locationButton);
+
+        {#Handle location error#}
         locationButton.addEventListener("click", () => {
             if (navigator.geolocation) {
                 navigator.geolocation.getCurrentPosition(
@@ -99,14 +84,20 @@
             }
         });
 
-        {#Find me button event listener#}
-
-        {#// Build the search box and link it to the html elements#}
-        {#const input = document.getElementById('pac-input')#}
-        {#const searchBox = new google.maps.places.SearchBox(input);#}
-        {##}
-        {#// Add the search box to the map#}
-        {#map.controls[google.maps.ControlPosition.TOP_LEFT].push(input);#}
+        {#Show the Ryegrass location#}
+        {% for location in locations %}
+            new google.maps.Marker({
+                position: {
+                    lat: {{ location.rye_lat }}, lng: {{ location.rye_lon }}
+                },
+                map: map,
+                title: '{{ location.rye_vernacular_name }}',
+                icon: {
+                    url: "{% static 'images/map_icon.png' %}",
+                    scaledSize: new google.maps.Size(30, 30)
+                }
+            });
+        {% endfor %}
     }
 </script>
 
