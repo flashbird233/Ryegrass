@@ -4,8 +4,6 @@
 <head>
     <meta charset="UTF-8">
     <title>Ryegrass Map and Route Suggestion</title>
-    {#    <link rel="stylesheet" type="text/css" href="{% static 'css/map.css' %}">#}
-    {#    <script src="{% static 'js/map.js' %}"></script>#}
     {# Google Map API #}
     <style>
         #find-me {
@@ -26,7 +24,6 @@
 </head>
 <body>
 <h1 style="text-align: center">My Map</h1>
-{#<input id="pac-input" class="controls" type="text" placeholder="Search Box"/>#}
 <!-- A button to find the user's location -->
 <button id="find-me"></button>
 <!--The div element for the map-->
@@ -101,10 +98,7 @@
     }
 </script>
 
-{# Google Map API #}
-{#<script type="text/javascript">#}
-{#    var locations = {{ locations|safe }}#}
-{#</script>#}
+{#Load the Google Map API#}
 <script defer
         src="https://maps.googleapis.com/maps/api/js?key=AIzaSyA7Cnsz3PzLoUoFKL-Mow0AvTtoLd99drA&callback=initMap"></script>
 </body>
