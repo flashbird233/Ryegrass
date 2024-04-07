@@ -22,3 +22,7 @@ def rye_map(request):
 # Cloth Edu Page
 def cloth_edu(request):
     return render(request, 'Cloth_Edu.html')
+
+
+def base(request):
+    return render(request, 'base.html')

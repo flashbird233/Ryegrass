@@ -1,9 +1,13 @@
 {% load static %}
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" xmlns="http://www.w3.org/1999/html">
 <head>
     <meta charset="UTF-8">
     <title>Ryegrass Map and Route Suggestion</title>
+    {# Google Map CSS #}
+    <link rel="stylesheet" type="text/css" href="{% static 'css/map.css' %}">
+    <script src="{% static 'js/map.js' %}"></script>
+    {# Google Map API #}
     <style>
         #pac-input {
             background-color: #fff;
@@ -20,61 +24,64 @@
             border-color: #4d90fe;
         }
     </style>
-    {# Google Map API #}
-    <script defer
-            src="https://maps.googleapis.com/maps/api/js?key=AIzaSyA7Cnsz3PzLoUoFKL-Mow0AvTtoLd99drA&callback=initMap"></script>
     {# Google Map JS #}
-    <script>
-
-        async function initMap() {
-            {#Define the Australia Boundary#}
-            var ausBounds = {
-                north: -9,
-                south: -45,
-                east: 155,
-                west: 111
-            }
-            {#Map Options#}
-            const map = new google.maps.Map(document.getElementById('map'), {
-                zoom: 10,
-                center: {lat: -37.813611, lng: 144.963056},
-                streetViewControl: false,
-                minZoom: 4,
-                disableDefaultUI: true,
-                fullscreenControl: true,
-                restriction: {
-                    latLngBounds: ausBounds,
-                    strictBounds: true
-                }
-            });
-
-            {#Show the Ryegrass location#}
-            {% for location in locations %}
-                new google.maps.Marker({
-                    position: {
-                        lat: {{ location.rye_lat }}, lng: {{ location.rye_lon }}
-                    },
-                    map: map,
-                    title: '{{ location.rye_vernacular_name }}',
-                    icon: {
-                        url: "{% static 'images/map_icon.png' %}",
-                        scaledSize: new google.maps.Size(30, 30)
-                    }
-                });
-            {% endfor %}
-
-            // Build the search box and link it to the html elements
-            const input = document.getElementById('pac-input')
-            const searchBox = new google.maps.places.SearchBox(input);
-
-            // Add the search box to the map
-            map.controls[google.maps.ControlPosition.TOP_LEFT].push(input);
-        }
-    </script>
+    {#    <script>#}
+    {##}
+    {#        async function initMap() {#}
+    {#Define the Australia Boundary#}
+    {#            var ausBounds = {#}
+    {#                north: -9,#}
+    {#                south: -45,#}
+    {#                east: 155,#}
+    {#                west: 111#}
+    {#            }#}
+    {#Map Options#}
+    {#            const map = new google.maps.Map(document.getElementById('map'), {#}
+    {#                zoom: 10,#}
+    {#                center: {lat: -37.813611, lng: 144.963056},#}
+    {#                streetViewControl: false,#}
+    {#                minZoom: 4,#}
+    {#                disableDefaultUI: true,#}
+    {#                fullscreenControl: true,#}
+    {#                restriction: {#}
+    {#                    latLngBounds: ausBounds,#}
+    {#                    strictBounds: true#}
+    {#                }#}
+    {#            });#}
+    {##}
+    {#Show the Ryegrass location#}
+    {#            {% for location in locations %}#}
+    {#                new google.maps.Marker({#}
+    {#                    position: {#}
+    {#                        lat: {{ location.rye_lat }}, lng: {{ location.rye_lon }}#}
+    {#                    },#}
+    {#                    map: map,#}
+    {#                    title: '{{ location.rye_vernacular_name }}',#}
+    {#                    icon: {#}
+    {#                        url: "{% static 'images/map_icon.png' %}",#}
+    {#                        scaledSize: new google.maps.Size(30, 30)#}
+    {#                    }#}
+    {#                });#}
+    {#            {% endfor %}#}
+    {##}
+    {#            // Build the search box and link it to the html elements#}
+    {#            const input = document.getElementById('pac-input')#}
+    {#            const searchBox = new google.maps.places.SearchBox(input);#}
+    {##}
+    {#            // Add the search box to the map#}
+    {#            map.controls[google.maps.ControlPosition.TOP_LEFT].push(input);#}
+    {#        }#}
+    {#    </script>#}
 </head>
 <body>
 <h1>My Map</h1>
 <input id="pac-input" class="controls" type="text" placeholder="Search Box"/>
 <div id="map" style="height: 500px; width: 75%; margin: 0 auto"></div>
+<script type='text/javascript'>
+    var locations = {{ locations|safe }};
+</script>
+{# Google Map API #}
+<script defer
+        src="https://maps.googleapis.com/maps/api/js?key=AIzaSyA7Cnsz3PzLoUoFKL-Mow0AvTtoLd99drA&callback=initMap"></script>
 </body>
 </html>
