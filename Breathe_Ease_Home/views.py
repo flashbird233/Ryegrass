@@ -17,3 +17,8 @@ def rye_map(request):
     check_date = now - relativedelta(years=3)
     ryegrass = Ryegrass.objects.filter(rye_date__gte=check_date).values('rye_lat', 'rye_lon', 'rye_vernacular_name')
     return render(request, 'Map_Page.html', {'locations': ryegrass})
+
+
+# Cloth Edu Page
+def cloth_edu(request):
+    return render(request, 'Cloth_Edu.html')

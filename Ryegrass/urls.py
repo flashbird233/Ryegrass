@@ -26,5 +26,6 @@ urlpatterns = [
     path('', Breathe_Ease_Home.views.home),  # Default path
     path('home/', Breathe_Ease_Home.views.home),
     path('map/', Breathe_Ease_Home.views.rye_map),
-    re_path(r'static/(?P<path>.*)', serve, {"document_root": settings.STATIC_ROOT}, name="static")
+    re_path(r'static/(?P<path>.*)', serve, {"document_root": settings.STATIC_ROOT}, name="static"),
+    path('cloth_edu/', Breathe_Ease_Home.views.cloth_edu),
 ]

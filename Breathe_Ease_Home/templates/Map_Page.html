@@ -4,6 +4,22 @@
 <head>
     <meta charset="UTF-8">
     <title>Ryegrass Map and Route Suggestion</title>
+    <style>
+        #pac-input {
+            background-color: #fff;
+            font-family: Roboto;
+            font-size: 15px;
+            font-weight: 300;
+            margin-left: 12px;
+            padding: 0 11px 0 13px;
+            text-overflow: ellipsis;
+            width: 400px;
+        }
+
+        #pac-input:focus {
+            border-color: #4d90fe;
+        }
+    </style>
     {# Google Map API #}
     <script defer
             src="https://maps.googleapis.com/maps/api/js?key=AIzaSyA7Cnsz3PzLoUoFKL-Mow0AvTtoLd99drA&callback=initMap"></script>
@@ -46,11 +62,19 @@
                     }
                 });
             {% endfor %}
+
+            // Build the search box and link it to the html elements
+            const input = document.getElementById('pac-input')
+            const searchBox = new google.maps.places.SearchBox(input);
+
+            // Add the search box to the map
+            map.controls[google.maps.ControlPosition.TOP_LEFT].push(input);
         }
     </script>
 </head>
 <body>
 <h1>My Map</h1>
+<input id="pac-input" class="controls" type="text" placeholder="Search Box"/>
 <div id="map" style="height: 500px; width: 75%; margin: 0 auto"></div>
 </body>
 </html>
