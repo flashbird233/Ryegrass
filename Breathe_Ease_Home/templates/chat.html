@@ -1,57 +1,55 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <title>Simple Customer Support Chat</title>
-</head>
-<body>
+{% extends 'base.html' %}
+{% load static %}
 
-<h2>Customer Support Chat</h2>
+{% block content %}
+<section class="about-section text-center" id="about">
+    <p>Please select an option:</p>
+    <select id="optionSelect">
+        <option value="data">data</option>
+        <option value="data visualization">data visualization</option>
+        <option value="map">map</option>
+        <option value="display">display</option>
+        <option value="nearby">nearby</option>
+        <option value="distribut">distribut</option>
 
-<p>Ask me a question:</p>
-<input type="text" id="questionInput" placeholder="Type your question...">
-<button onclick="getResponse()">Submit</button>
+        <option value="cloth">cloth</option>
+        <option value="hat">hat</option>
+        <option value="face mask">face mask</option>
+        <option value="time">time</option>
 
-<p id="response"></p>
+        <option value="educat">educat</option>
+        <option value="information">information</option>
+        <option value="info">info</option>
+    </select>
+    <button onclick="redirectToPage()">Submit</button>
+</section>
 
-<!-- Django模板中 -->
-<script type="text/javascript">
-    // 使用Django的url模板标签预先生成URL
-    var urls = {
-        'numberPage': "{% 'Breathe_Ease_Home/home.html' %}",
-        'letterPage': "{% 'Breathe_Ease_Home/suggestion' %}",
-    };
-</script>
+<script>
 
-<script type="text/javascript">
-    // JavaScript中的映射关系
-    const mappings = {
-        'dataPage': ["data", "data visualization", "map", "display", "nearby","distribut"],
-        'suggestionrPage': ["cloth", "hat", "face mask", "time"],
-        'informationPage': ["educat", "information", "info"],
-    };
+const mappings = {
+    'https://ryegrass.azurewebsites.net/map/': ["data", "data visualization", "map", "display", "nearby", "distribut"],
+    'https://ryegrass.azurewebsites.net/cloth_sug': ["cloth", "hat", "face mask", "time"],
+    'https://ryegrass.azurewebsites.net/cloth_edu/': ["educat", "information", "info"],
+};
 
-    function getResponse(input) {
-        // 标准化输入
-        input = input.toLowerCase();
-        var responseLink = null;
+function redirectToPage() {
+    const selectedOption = document.getElementById('optionSelect').value;
+    let targetUrl = '';
 
-        // 遍历mappings寻找匹配项
-        for (const [page, keys] of Object.entries(mappings)) {
-            if (keys.includes(input)) {
-                responseLink = urls[page];
-                break;
-            }
-        }
 
-        // 打开链接或显示错误信息
-        if (responseLink) {
-            window.open(responseLink, '_blank');
-        } else {
-            alert("未识别的输入。可用的链接有：" + Object.values(urls).join(", "));
+    for (const [url, keywords] of Object.entries(mappings)) {
+        if (keywords.includes(selectedOption)) {
+            targetUrl = url;
+            break;
         }
     }
+
+
+    if (targetUrl) {
+        window.location.href = targetUrl;
+    } else {
+        console.error('No matching URL found for the selected option');
+    }
+}
 </script>
-
-
-</body>
-</html>
+{% endblock %}
