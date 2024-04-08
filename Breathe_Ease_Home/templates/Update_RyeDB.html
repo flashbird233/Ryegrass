@@ -6,16 +6,16 @@
 <body>
 <h1>Update Ryegrass</h1>
 <!-- Your form to update the Ryegrass object -->
-{#{% for record in new_records %}#}
-{#    <p>#}
-{#        Latitude: {{ record.rye_lat }}<br>#}
-{#        Longitude: {{ record.rye_lon }}<br>#}
-{#        Recorded by: {{ record.rye_record_by }}<br>#}
-{#        Date: {{ record.rye_date }}<br>#}
-{#        Scientific name: {{ record.rye_scientific_name }}<br>#}
-{#        Vernacular name: {{ record.rye_vernacular_name }}<br>#}
-{#        Taxon concept ID: {{ record.rye_taxon_concept_id }}<br>#}
-{#    </p>#}
-{#{% endfor %}#}
+{% for record in new_records %}
+    <p>
+        Latitude: {{ record.rye_lat }}<br>
+        Longitude: {{ record.rye_lon }}<br>
+        Recorded by: {{ record.rye_record_by }}<br>
+        Date: {{ record.rye_date }}<br>
+        Scientific name: {{ record.rye_scientific_name }}<br>
+        Vernacular name: {{ record.rye_vernacular_name }}<br>
+        Taxon concept ID: {{ record.rye_taxon_concept_id }}<br>
+    </p>
+{% endfor %}
 </body>
 </html>

@@ -41,16 +41,18 @@ def update_ryegrass(request):
     for record in records:
         new_rec = {'rye_lat': float(record['decimalLatitude']),
                    'rye_lon': float(record['decimalLongitude']),
-                   'rye_record_by': str(record.get('recordedBy')),
+                   'rye_recorded_by': " | ".join(record.get('recordedBy')),
                    'rye_date': record.get('eventDate'),
                    'rye_scientific_name': str(record.get('scientificName')),
                    'rye_vernacular_name': str(record.get('vernacularName')),
                    'rye_taxon_concept_id': str(record.get('taxonConceptID'))}
         new_json.append(new_rec)
     new_df = pd.DataFrame(new_json)
+    # Remove the records with missing eventDate
+    new_df = new_df[new_df['rye_date'].notna()].reset_index(drop=True)
     # Change the rye_date to datetime
     new_df['rye_date'] = pd.to_datetime(new_df['rye_date'], unit='ms')
-    new_df['rye_date'] = new_df['rye_date'].dt.strftime('%Y-%m-%dT%H:%M:%S')
+    new_df['rye_date'] = new_df['rye_date'].dt.strftime('%Y-%m-%d')
     # Get current data
     current_df = pd.DataFrame(list(ryegrass.values()))
     # Only keep the data in new_df when rye_date, rye_lat, rye_lon are not in current_df
@@ -60,7 +62,14 @@ def update_ryegrass(request):
     new_df = new_df[new_df['_merge'] != 'both']
     new_df.drop(columns=['_merge'], inplace=True)
     # Save the new data to database
-    return render(request, 'Update_RyeDB.html', {'ryegrass': ryegrass, 'new_records': new_records})
+    for index, row in new_df.iterrows():
+        ryegrass = Ryegrass(rye_lat=row['rye_lat'], rye_lon=row['rye_lon'],
+                            rye_record_by=row['rye_recorded_by'],
+                            rye_date=row['rye_date_x'],
+                            rye_scientific_name=row['rye_scientific_name_x'],
+                            rye_vernacular_name=row['rye_vernacular_name_x'],
+                            rye_taxon_concept_id=row['rye_taxon_concept_id_x'])
+    return render(request, 'Update_RyeDB.html', {'ryegrass': ryegrass})
     # return render(request, 'Update_RyeDB.html')
 
 
