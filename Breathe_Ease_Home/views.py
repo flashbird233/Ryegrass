@@ -9,6 +9,10 @@ from django.utils import timezone
 from Breathe_Ease_Home.models import Ryegrass
 from .forms import ExposureTimeForm
 
+# import logging
+#
+# logger = logging.getLogger(__name__)
+
 
 def home(request):
     return render(request, 'Breathe_Ease_Home.html')
@@ -106,4 +110,4 @@ def suggest_clothing(request):
 
 
 def customer_support_chat(request):
-    return render(request, 'Chat.html')  # 'chat.html' is the interface
+    return render(request, 'chat.html')  # 'chat.html' is the interface
