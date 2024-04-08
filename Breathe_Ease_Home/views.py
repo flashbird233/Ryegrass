@@ -19,7 +19,7 @@ def rye_map(request):
     now = timezone.now()
     check_date = now - relativedelta(years=3)
     ryegrass = Ryegrass.objects.filter(rye_date__gte=check_date).values('rye_lat', 'rye_lon', 'rye_vernacular_name')
-    return render(request, 'Map_Page.html', {'locations': ryegrass})
+    return render(request, 'Map_Page_New.html', {'locations': ryegrass})
 
 
 # Cloth Edu Page
@@ -60,9 +60,6 @@ def update_ryegrass(request):
     new_df = new_df[new_df['_merge'] != 'both']
     new_df.drop(columns=['_merge'], inplace=True)
     # Save the new data to database
-    new_records = new_df.to_dict('records')
-    ryegrass_objects = [Ryegrass(**record) for record in new_records]
-    Ryegrass.objects.bulk_create(ryegrass_objects)
     return render(request, 'Update_RyeDB.html', {'ryegrass': ryegrass, 'new_records': new_records})
     # return render(request, 'Update_RyeDB.html')
 
@@ -101,4 +98,3 @@ def suggest_clothing(request):
 
 def customer_support_chat(request):
     return render(request, 'Chat.html')  # 'chat.html' is the interface
-
