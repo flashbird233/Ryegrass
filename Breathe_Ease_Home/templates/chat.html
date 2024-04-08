@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Simple Customer Support Chat</title>
+</head>
+<body>
+
+<h2>Customer Support Chat</h2>
+
+<p>Ask me a question:</p>
+<input type="text" id="questionInput" placeholder="Type your question...">
+<button onclick="getResponse()">Submit</button>
+
+<p id="response"></p>
+
+<!-- Django模板中 -->
+<script type="text/javascript">
+    // 使用Django的url模板标签预先生成URL
+    var urls = {
+        'numberPage': "{% 'Breathe_Ease_Home/home.html' %}",
+        'letterPage': "{% 'Breathe_Ease_Home/suggestion' %}",
+    };
+</script>
+
+<script type="text/javascript">
+    // JavaScript中的映射关系
+    const mappings = {
+        'dataPage': ["data", "data visualization", "map", "display", "nearby","distribut"],
+        'suggestionrPage': ["cloth", "hat", "face mask", "time"],
+        'informationPage': ["educat", "information", "info"],
+    };
+
+    function getResponse(input) {
+        // 标准化输入
+        input = input.toLowerCase();
+        var responseLink = null;
+
+        // 遍历mappings寻找匹配项
+        for (const [page, keys] of Object.entries(mappings)) {
+            if (keys.includes(input)) {
+                responseLink = urls[page];
+                break;
+            }
+        }
+
+        // 打开链接或显示错误信息
+        if (responseLink) {
+            window.open(responseLink, '_blank');
+        } else {
+            alert("未识别的输入。可用的链接有：" + Object.values(urls).join(", "));
+        }
+    }
+</script>
+
+
+</body>
+</html>

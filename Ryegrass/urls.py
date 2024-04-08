@@ -29,5 +29,7 @@ urlpatterns = [
     re_path(r'static/(?P<path>.*)', serve, {"document_root": settings.STATIC_ROOT}, name="static"),
     path('cloth_edu/', Breathe_Ease_Home.views.cloth_edu),
     path('base/', Breathe_Ease_Home.views.base),
-    path('admin/update_ryedb', Breathe_Ease_Home.views.update_ryedb_admin)
+    path('update_ryedb', Breathe_Ease_Home.views.update_ryegrass, name='update_ryegrass'),
+    path('chat/', Breathe_Ease_Home.views.customer_support_chat, name='customer_support_chat'),
+    path('cloth_sug', Breathe_Ease_Home.views.suggest_clothing, name='suggest_clothing'),
 ]

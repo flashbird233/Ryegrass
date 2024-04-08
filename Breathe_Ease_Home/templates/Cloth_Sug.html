@@ -1,0 +1,39 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+    <header class="masthead">
+        <div class="container px-4 px-lg-5 d-flex h-100 align-items-center justify-content-center">
+            <div class="d-flex justify-content-center">
+                <div class="text-center">
+                    <h1 class="mx-auto my-0 text-uppercase">Breathe_Ease</h1>
+                    <h2 class="text-white-50 mx-auto mt-2 mb-5">In Australia, ryegrass pollen season spans from
+                        September to the end of December each year, with the peak period extending from mid-October to
+                        mid-December. Individuals allergic to ryegrass pollen are advised to stay clear of these
+                        allergens, especially during peak times, as the best defense is to avoid exposure. After rain,
+                        precautions should be taken as water can break down pollen particles, making them smaller and
+                        more likely to enter the respiratory tract. Thus, post-rain, those with allergies should ensure
+                        they wear masks to minimize inhalation of pollen.</h2>
+                    <a class="btn btn-primary" href="#about">Get Started</a>
+                </div>
+            </div>
+        </div>
+    </header>
+    <section class="about-section text-center" id="about">
+        <p>Please enter your outdoor activity time (in hours).If the input is incorrect, the query cannot be made</p>
+        <form method="post">
+            {% csrf_token %}
+            {{ form.duration }}
+            <input type="submit" value="submit">
+        </form>
+        <div>
+            or return
+        </div>
+        <div><a class="btn btn-primary" href="/cloth_sug">return</a></div>
+        {% if suggestions %}
+            <div>
+                <h2>Clothing recommendations:</h2>
+                <p>{{ suggestions }}</p>
+            </div>
+            </section>
+        {% endif %}
+{% endblock %}
