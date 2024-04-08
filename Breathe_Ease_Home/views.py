@@ -1,3 +1,7 @@
+import json
+
+import pandas as pd
+import requests
 from dateutil.relativedelta import relativedelta
 from django.shortcuts import render
 from django.utils import timezone
@@ -27,11 +31,40 @@ def base(request):
     return render(request, 'base.html')
 
 
-def update_ryegrass(request, pk):
-    ryegrass = Ryegrass.objects.get(pk=pk)
-    # Your logic to update the Ryegrass object
-    # ...
-    return render(request, 'Update_RyeDB.html', {'ryegrass': ryegrass})
+def update_ryegrass(request):
+    ryegrass = Ryegrass.objects.all()
+    response = requests.get(
+        'https://api.ala.org.au/occurrences/occurrences/search?q=lsid%3Ahttps%3A%2F%2Fid.biodiversity.org.au%2Ftaxon%2Fapni%2F51442752&qualityProfile=ALA&qc=-_nest_parent_%3A*')
+    response = json.loads(response.text)
+    records = response['occurrences']
+    new_json = []
+    for record in records:
+        new_rec = {'rye_lat': float(record['decimalLatitude']),
+                   'rye_lon': float(record['decimalLongitude']),
+                   'rye_record_by': str(record.get('recordedBy')),
+                   'rye_date': record.get('eventDate'),
+                   'rye_scientific_name': str(record.get('scientificName')),
+                   'rye_vernacular_name': str(record.get('vernacularName')),
+                   'rye_taxon_concept_id': str(record.get('taxonConceptID'))}
+        new_json.append(new_rec)
+    new_df = pd.DataFrame(new_json)
+    # Change the rye_date to datetime
+    new_df['rye_date'] = pd.to_datetime(new_df['rye_date'], unit='ms')
+    new_df['rye_date'] = new_df['rye_date'].dt.strftime('%Y-%m-%dT%H:%M:%S')
+    # Get current data
+    current_df = pd.DataFrame(list(ryegrass.values()))
+    # Only keep the data in new_df when rye_date, rye_lat, rye_lon are not in current_df
+    current_df.set_index(['rye_lat', 'rye_lon'], inplace=True)
+    new_df = new_df.merge(current_df, how='left', left_on=['rye_lat', 'rye_lon'], right_index=True,
+                          indicator=True)
+    new_df = new_df[new_df['_merge'] != 'both']
+    new_df.drop(columns=['_merge'], inplace=True)
+    # Save the new data to database
+    new_records = new_df.to_dict('records')
+    ryegrass_objects = [Ryegrass(**record) for record in new_records]
+    Ryegrass.objects.bulk_create(ryegrass_objects)
+    return render(request, 'Update_RyeDB.html', {'ryegrass': ryegrass, 'new_records': new_records})
+    # return render(request, 'Update_RyeDB.html')
 
 
 def generate_suggestions(duration):
@@ -68,3 +101,4 @@ def suggest_clothing(request):
 
 def customer_support_chat(request):
     return render(request, 'Chat.html')  # 'chat.html' is the interface
+
