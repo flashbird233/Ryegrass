@@ -1,3 +1,59 @@
+{#{% extends 'base.html' %}#}
+{#{% load static %}#}
+{##}
+{#{% block content %}#}
+{#<section class="about-section text-center" id="about">#}
+{#    <p>Please select an option:</p>#}
+{#    <select id="optionSelect">#}
+{#        <option value="data">data</option>#}
+{#        <option value="data visualization">data visualization</option>#}
+{#        <option value="map">map</option>#}
+{#        <option value="display">display</option>#}
+{#        <option value="nearby">nearby</option>#}
+{#        <option value="distribut">distribut</option>#}
+{##}
+{#        <option value="cloth">cloth</option>#}
+{#        <option value="hat">hat</option>#}
+{#        <option value="face mask">face mask</option>#}
+{#        <option value="time">time</option>#}
+{##}
+{#        <option value="educat">educat</option>#}
+{#        <option value="information">information</option>#}
+{#        <option value="info">info</option>#}
+{#    </select>#}
+{#    <button onclick="redirectToPage()">Submit</button>#}
+{#</section>#}
+{##}
+{#<script>#}
+{##}
+{#const mappings = {#}
+{#    'https://ryegrass.azurewebsites.net/map/': ["data", "data visualization", "map", "display", "nearby", "distribut"],#}
+{#    'https://ryegrass.azurewebsites.net/cloth_sug': ["cloth", "hat", "face mask", "time"],#}
+{#    'https://ryegrass.azurewebsites.net/cloth_edu/': ["educat", "information", "info"],#}
+{#};#}
+{##}
+{#function redirectToPage() {#}
+{#    const selectedOption = document.getElementById('optionSelect').value;#}
+{#    let targetUrl = '';#}
+{##}
+{##}
+{#    for (const [url, keywords] of Object.entries(mappings)) {#}
+{#        if (keywords.includes(selectedOption)) {#}
+{#            targetUrl = url;#}
+{#            break;#}
+{#        }#}
+{#    }#}
+{##}
+{##}
+{#    if (targetUrl) {#}
+{#        window.location.href = targetUrl;#}
+{#    } else {#}
+{#        console.error('No matching URL found for the selected option');#}
+{#    }#}
+{#}#}
+{#</script>#}
+{#{% endblock %}#}
+
 {% extends 'base.html' %}
 {% load static %}
 
@@ -11,32 +67,31 @@
         <option value="display">display</option>
         <option value="nearby">nearby</option>
         <option value="distribut">distribut</option>
-
+        <!-- ... 更多选项 ... -->
         <option value="cloth">cloth</option>
         <option value="hat">hat</option>
         <option value="face mask">face mask</option>
         <option value="time">time</option>
-
+        <!-- ... 更多选项 ... -->
         <option value="educat">educat</option>
         <option value="information">information</option>
         <option value="info">info</option>
     </select>
-    <button onclick="redirectToPage()">Submit</button>
+    <button onclick="showUrl()">Submit</button>
 </section>
 
 <script>
-
 const mappings = {
     'https://ryegrass.azurewebsites.net/map/': ["data", "data visualization", "map", "display", "nearby", "distribut"],
     'https://ryegrass.azurewebsites.net/cloth_sug': ["cloth", "hat", "face mask", "time"],
     'https://ryegrass.azurewebsites.net/cloth_edu/': ["educat", "information", "info"],
 };
 
-function redirectToPage() {
+function showUrl() {
     const selectedOption = document.getElementById('optionSelect').value;
     let targetUrl = '';
 
-
+    // 根据选择的选项找到对应的 URL
     for (const [url, keywords] of Object.entries(mappings)) {
         if (keywords.includes(selectedOption)) {
             targetUrl = url;
@@ -44,12 +99,13 @@ function redirectToPage() {
         }
     }
 
-
+    // 如果找到了对应的 URL，则显示
     if (targetUrl) {
-        window.location.href = targetUrl;
+        alert("The URL is: " + targetUrl);
     } else {
         console.error('No matching URL found for the selected option');
     }
 }
 </script>
 {% endblock %}
+
