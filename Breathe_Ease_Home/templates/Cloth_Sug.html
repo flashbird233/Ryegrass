@@ -1,5 +1,46 @@
+{#{% extends 'base.html' %}#}
+{#{% load static %}#}
+{#{% block content %}#}
+{#    <header class="masthead">#}
+{#        <div class="container px-4 px-lg-5 d-flex h-100 align-items-center justify-content-center">#}
+{#            <div class="d-flex justify-content-center">#}
+{#                <div class="text-center">#}
+{#                    <h1 class="mx-auto my-0 text-uppercase">Breathe_Ease</h1>#}
+{#                    <h2 class="text-white-50 mx-auto mt-2 mb-5">In Australia, ryegrass pollen season spans from#}
+{#                        September to the end of December each year, with the peak period extending from mid-October to#}
+{#                        mid-December. Individuals allergic to ryegrass pollen are advised to stay clear of these#}
+{#                        allergens, especially during peak times, as the best defense is to avoid exposure. After rain,#}
+{#                        precautions should be taken as water can break down pollen particles, making them smaller and#}
+{#                        more likely to enter the respiratory tract. Thus, post-rain, those with allergies should ensure#}
+{#                        they wear masks to minimize inhalation of pollen.</h2>#}
+{#                    <a class="btn btn-primary" href="#about">Get Started</a>#}
+{#                </div>#}
+{#            </div>#}
+{#        </div>#}
+{#    </header>#}
+{#    <section class="about-section text-center" id="about">#}
+{#        <p>Please enter your outdoor activity time (in hours).If the input is incorrect, the query cannot be made</p>#}
+{#        <form method="post">#}
+{#            {% csrf_token %}#}
+{#            {{ form.duration }}#}
+{#            <input type="submit" value="submit">#}
+{#        </form>#}
+{#        <div>#}
+{#            or return#}
+{#        </div>#}
+{#        <div><a class="btn btn-primary" href="/cloth_sug">return</a></div>#}
+{#        {% if suggestions %}#}
+{#            <div>#}
+{#                <h2>Clothing recommendations:</h2>#}
+{#                <p>{{ suggestions }}</p>#}
+{#            </div>#}
+{#            </section>#}
+{#        {% endif %}#}
+{#{% endblock %}#}
+
 {% extends 'base.html' %}
 {% load static %}
+
 {% block content %}
     <header class="masthead">
         <div class="container px-4 px-lg-5 d-flex h-100 align-items-center justify-content-center">
@@ -18,22 +59,45 @@
             </div>
         </div>
     </header>
-    <section class="about-section text-center" id="about">
-        <p>Please enter your outdoor activity time (in hours).If the input is incorrect, the query cannot be made</p>
-        <form method="post">
-            {% csrf_token %}
-            {{ form.duration }}
-            <input type="submit" value="submit">
-        </form>
-        <div>
-            or return
-        </div>
-        <div><a class="btn btn-primary" href="/cloth_sug">return</a></div>
-        {% if suggestions %}
-            <div>
-                <h2>Clothing recommendations:</h2>
-                <p>{{ suggestions }}</p>
-            </div>
-            </section>
-        {% endif %}
+<section class="about-section text-center" id="about">
+    <p>Please enter your outdoor activity time (in hours).</p>
+    <label for="duration">Outdoor activity time:</label>
+    <select id="duration">
+        <option value="0">0 hours</option>
+        <option value="1">1 hour</option>
+        <option value="2">2 hours</option>
+        <option value="3">3 hours</option>
+        <option value="4">4 hours</option>
+        <option value="5">5 hours</option>
+        <option value="more">More than 5 hours</option>
+    </select>
+    <button onclick="showRecommendation()">Submit</button>
+    <div id="suggestions" style="display:none;">
+        <h2>Clothing recommendations:</h2>
+        <p id="suggestionsText"></p>
+    </div>
+    <div>
+        or <a class="btn btn-primary" href="/cloth_sug">return</a>
+    </div>
+</section>
+
+<script>
+function showRecommendation() {
+    var duration = document.getElementById('duration').value;
+    var suggestionsText = document.getElementById('suggestionsText');
+    var suggestionsDiv = document.getElementById('suggestions');
+
+    if (duration === "0") {
+        suggestionsText.innerText = "No protective measures are necessary.";
+    } else if (duration === "1") {
+        suggestionsText.innerText = "Recommend wearing a surgical mask, sunglasses, long sleeves, trousers, and a hat. Choose tightly woven cotton or synthetic fabrics.";
+    } else if (duration === "2" || duration === "3" || duration === "4") {
+        suggestionsText.innerText = "Recommend wearing an N95 mask, sunglasses, long sleeves, trousers, gloves, and a hat. Post-exposure, it's advised to wash promptly. Opt for high-performance textiles like microporous materials or specially treated fabrics.";
+    } else if (duration === "5" || duration === "more") {
+        suggestionsText.innerText = "Advise using an N95 mask, sunglasses, long sleeves, trousers, gloves, and a hat with a substantial brim. After leaving the allergen area, take a shower and change clothes immediately. For clothing material, medical-grade protective garments are preferred.";
+    }
+
+    suggestionsDiv.style.display = 'block';
+}
+</script>
 {% endblock %}
