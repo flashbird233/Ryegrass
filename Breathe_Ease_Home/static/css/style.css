@@ -11117,10 +11117,16 @@ body {
   }
 }
 
+/*.about-section {*/
+/*  padding-top: 10rem;*/
+/*background: linear-gradient(to bottom, rgba(47, 79, 79, 0) 0%, #2F4F4F 100%);*/
+/*}*/
+
 .about-section {
   padding-top: 10rem;
-background: linear-gradient(to bottom, rgba(47, 79, 79, 0) 0%, #2F4F4F 100%);
+  background-color: #2F4F4F; /* Solid color background */
 }
+
 
 .about-section p {
   margin-bottom: 5rem;
