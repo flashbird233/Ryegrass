@@ -34,6 +34,9 @@ def cloth_edu(request):
 def base(request):
     return render(request, 'base.html')
 
+def Allergy_Hub(request):
+    return render(request, 'Allergy_Hub.html')
+
 
 def update_ryegrass(request):
     ryegrass = Ryegrass.objects.all()

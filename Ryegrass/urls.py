@@ -32,4 +32,5 @@ urlpatterns = [
     path('update_ryedb', Breathe_Ease_Home.views.update_ryegrass, name='update_ryegrass'),
     path('chat/', Breathe_Ease_Home.views.customer_support_chat, name='customer_support_chat'),
     path('cloth_sug', Breathe_Ease_Home.views.suggest_clothing, name='suggest_clothing'),
+    path('Allergy_Hub', Breathe_Ease_Home.views.Allergy_Hub, name='Allergy_Hub'),
 ]
