@@ -1,31 +1,233 @@
 {% extends 'base.html' %}
 {% load static %}
 {% block content %}
-            <section class="about-section text-center" id="about">
-            <div class="container px-4 px-lg-5">
-                <div class="row gx-4 gx-lg-5 justify-content-center">
-                    <div class="col-lg-8">
-                        <h2 class="text-white mb-4">Welcome to the Allergy Hub Page</h2>
-                        <p class="text-white-50">
-                            This section will soon be implemented.
-                        </p>
+    <section class="about-section text-center" id="about">
+        <div class="container px-4 px-lg-5">
+            <div class="row gx-4 gx-lg-5 justify-content-center">
+                <div class="col-lg-8">
+                    <h2 class="text-white mb-4">Welcome to the Allergy Hub Page</h2>
+                    <p class="text-white-50">
+                        This section will soon be implemented.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+    <!-- Projects-->
+    <section class="projects-section bg-light" id="projects">
+        <div class="container px-4 px-lg-5">
+            <div class="row gx-0 justify-content-center">
+                <div class="tab-container col-lg-12">
+                    <button class="tablinks" onclick="openTab(event, 'CalendarTab')">Reminder</button>
+                    <button class="tablinks active" onclick="openTab(event, 'RelieferTab')">Reliefer</button>
+                    <button class="tablinks" onclick="openTab(event, 'RateTab')">Symptom rate</button>
+
+                    <div id="CalendarTab" class="tabcontent">
+                        <h3>Generate a reminder background</h3>
+                        <div class="container px-4 px-lg-5">
+                            <div class="col-lg-4">
+                                <form>
+                                    <div class="d-flex align-items-center gap-1 my-2">
+                                        <label>
+                                            Selecting days to have medicine:
+                                            <input type="text"/>
+                                        </label>
+                                    </div>
+                                    <div class="d-flex align-items-center gap-1 my-2">
+                                        <label>
+                                            Time to take:
+                                            <input type="text"/>
+                                        </label>
+                                    </div>
+                                    <div class="d-flex align-items-center gap-1 my-2">
+                                        <label>
+                                            Medicine name:
+                                            <input type="text"/>
+                                        </label>
+                                    </div>
+                                    <div class="d-flex align-items-center gap-1 my-2">
+                                        <label>
+                                            Time to take:
+                                            <input type="text"/>
+                                        </label>
+                                    </div>
+
+                                </form>
+                                <div class="mt-2 px-4">
+                                    <button type="button" onclick="console.log('clicked')">generate</button>
+                                </div>
+                            </div>
+                            <div class="col-lg-8">
+                                <img class="img-fluid" src="{% static 'images//calendar.png' %}" alt="calendar"/>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div id="RelieferTab" class="tabcontent">
+                        <h3>Non-Medical Symptom reliefer</h3>
+                        <div class="container px-4 px-lg-5">
+                            <div class="col-lg-4">
+<!--                                 <form id="symptom-reliefer-form"-->
+<!--                                       method="post"-->
+<!--                                       action="{% url 'symptom-reliefer-form' %}">-->
+<!--                                    {% for symptom in symptoms %}-->
+<!--                                        <div class="d-flex align-items-center gap-1 my-2">-->
+<!--                                            <label>-->
+<!--                                                <input type="checkbox"-->
+<!--                                                       name="{{ symptoms.symptom_id }}"-->
+<!--                                                       value="{{ symptoms.symptom_id }}"-->
+<!--                                                />-->
+<!--                                                {{ symptoms.symptom_title }}-->
+<!--                                            </label>-->
+<!--                                        </div>-->
+<!--                                    {% endfor %}-->
+<!--                                    {% csrf_token %}-->
+<!--                                    {{ form.as_p }}-->
+<!--                                    <div class="mt-2 px-4">-->
+<!--                                        <button type="submit" onclick="console.log('clicked')">Submit</button>-->
+<!--                                    </div>-->
+<!--                                </form>-->
+                            </div>
+                            <div class="col-lg-8">
+                                <h4>Take the following action</h4>
+                                <div class="reliefer-result">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div id="RateTab" class="tabcontent">
+                        <h3>Symptom Rate</h3>
+                        <div class="container px-4 px-lg-5">
+                            <div class="col-lg-4">
+                                <form id="symptom-stats-form" method="post" action="{% url 'select_symptoms' %}">
+                                    {% csrf_token %}
+                                    {{ form.as_p }}
+
+                                    <div class="mt-2 px-4">
+                                        <button type="submit">Show</button>
+                                    </div>
+                                </form>
+                            </div>
+                            <div class="col-lg-8">
+                                <div id="chart-container" style="width: 75%;">
+                                    <canvas id="rate-chart" data-url="{% url 'rate-chart' %}"></canvas>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
-
             </div>
-        </section>
-        <!-- Projects-->
-        <section class="projects-section bg-light" id="projects">
-            <div class="container px-4 px-lg-5">
+        </div>
+    </section>
 
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@2.9.3/dist/Chart.min.js"></script>
+    <script>
+        // Simulated data (replace with your actual data)
+        const sampleRateData = {
+            labels: ['Sample 1', 'Sample 2', 'Sample 3', 'Others'],
+            data: [35, 13, 15, 37], // Example percentages
+        };
 
-            </div>
-        </section>
-        <section class="signup-section" id="signup">
-            <div class="container px-4 px-lg-5">
-                <div class="row gx-4 gx-lg-5">
+        const chartItemColors =['blue', 'pink','green','red','orange','navy'];
 
-                </div>
-            </div>
-        </section>
+        // Handling tab switching
+        function openTab(evt, tabName) {
+            const tabcontent = document.getElementsByClassName("tabcontent");
+            for (let i = 0; i < tabcontent.length; i++) {
+                tabcontent[i].style.display = "none";
+            }
+            const tablinks = document.getElementsByClassName("tablinks");
+            for (let i = 0; i < tablinks.length; i++) {
+                tablinks[i].className = tablinks[i].className.replace(" active", "");
+            }
+            document.getElementById(tabName).style.display = "block";
+            evt.currentTarget.className += " active";
+        }
+
+        function handleRelieferForm(){
+            const form = document.getElementById('symptom-reliefer-form');
+            form.addEventListener('submit', function(event) {
+                event.preventDefault(); // Prevent default form submission
+                const formData = new FormData(form); // Get form data
+
+                fetch(form.getAttribute('action'), {
+                    method: 'POST',
+                    body: formData,
+                    headers: {
+                        'X-CSRFToken': '{{ csrf_token }}' // Add CSRF token
+                    }
+                })
+                .then(function(response) {
+                    if (!response.ok) {
+                        throw Error(response.statusText);
+                    }
+                    return response.json();
+                })
+                .then(function(data) {
+                    document.querySelector('.reliefer-result').innerHTML = data.result_html;
+                })
+                .catch(function(error) {
+                    console.error('Fetch Error: ', error);
+                });
+            });
+        }
+
+        function handleStatisticsForm() {
+            const form = document.getElementById('symptom-stats-form');
+            form.addEventListener('submit', function(event) {
+                event.preventDefault();
+                const formData = new FormData(form);
+
+                fetch(this.getAttribute('action'), {
+                    method: 'POST',
+                    body: formData,
+                    headers: {
+                        'X-Requested-With': 'XMLHttpRequest',
+                        'X-CSRFToken': '{{ csrf_token }}'
+                    }
+                })
+                .then(response => response.json())
+                .then(data => {
+                    renderChart(data);
+                })
+                .catch(error => console.error('Error:', error));
+            });
+        }
+
+        function renderChart(rateData){
+            // Get the canvas element
+            const rateChartCanvas = document.getElementById('rate-chart');
+            const colors = chartItemColors.slice(0, rateData.data.length-1);
+            colors.push('gray'); // set the Other's color GRAY
+
+            // Create the pie chart
+            const rateChart = new Chart(rateChartCanvas, {
+                type: 'pie',
+                data: {
+                    labels: rateData.labels,
+                    datasets: [{
+                        data: rateData.data,
+                        backgroundColor: colors, // Customize colors
+                    }],
+                },
+                options: {
+                    responsive: true,
+                    legend: {
+                        position: 'top',
+                    },
+                    title: {
+                        display: true,
+                        text: 'Symptoms rate',
+                    },
+                },
+            });
+        }
+
+        document.addEventListener('DOMContentLoaded', function() {
+            renderChart(sampleRateData);
+            handleRelieferForm();
+            handleStatisticsForm();
+        });
+    </script>
 {% endblock %}

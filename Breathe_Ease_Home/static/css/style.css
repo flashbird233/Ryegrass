@@ -11154,6 +11154,12 @@ body {
   }
 }
 
+/* CSS for styling the tabs */
+.tab {
+    display: none;
+}
+
+
 .signup-section {
   padding: 10rem 0;
   background: linear-gradient(to bottom, rgba(0, 0, 0, 0.1) 0%, rgba(0, 0, 0, 0.5) 75%, #000 100%), url("../images/bg-signup.jpg");

@@ -4,10 +4,10 @@ import pandas as pd
 import requests
 from dateutil.relativedelta import relativedelta
 from django.shortcuts import render
+from django.http import JsonResponse
 from django.utils import timezone
-
-from Breathe_Ease_Home.models import Ryegrass
-from .forms import ExposureTimeForm
+from Breathe_Ease_Home.models import Ryegrass, Symptom, Symptom_statistics, Symptom_recommends , Recommend
+from .forms import ExposureTimeForm, SymptomForm, SymptomSelectionForm
 
 # import logging
 #
@@ -114,3 +114,67 @@ def suggest_clothing(request):
 
 def customer_support_chat(request):
     return render(request, 'chat.html')  # 'chat.html' is the interface
+
+
+# def get_symptoms(request):
+#     symptoms = Symptom.objects.all()
+#     return render(request, 'Allergy_Hub.html', {'symptoms': symptoms})
+
+def symptom_reliefer_form_view(request):
+    if request.method == 'POST':
+        form = SymptomForm(request.POST)
+        if form.is_valid():
+            selected_symptoms = form.cleaned_data['symptoms']
+            recommend_ids = Symptom_recommends.objects.filter(symptom_id__in=selected_symptoms).values_list('recommend_id', flat=True)
+            recommends = Recommend.objects.filter(recommend_id__in=recommend_ids)
+
+            # Render the result template and return as JSON
+            result_html = render_to_string('Allergy_Hub.html', {'recommends': recommends})
+            return JsonResponse({'result_html': result_html})
+    else:
+        form = SymptomForm()
+    return render(request, 'Allergy_Hub.html', {'form': form})
+
+def update_symptom_counts(selected_symptoms):
+    for symptom in selected_symptoms:
+        symptom_stats, _ = Symptom_statistics.objects.get_or_create(symptom_id=symptom.id)
+        symptom_stats.symptom_count += 1
+        symptom_stats.save()
+
+
+def calculate_percentage(selected_symptoms):
+    # Get all symptoms
+    all_symptoms = Symptom_statistics.objects.all()
+    # Calculate the total count of all symptoms
+    total_count = sum(symptom.symptom_count for symptom in all_symptoms)
+    # Calculate the count of selected symptoms
+    selected_count = sum(symptom.symptom_count for symptom in selected_symptoms)
+    # Calculate the count of the rest of the symptoms
+    rest_count = total_count - selected_count
+    # Calculate the percentage of selected symptoms
+    selected_percentage = [(symptom.symptom_count / total_count) * 100 for symptom in selected_symptoms]
+    # Calculate the percentage of the rest of the symptoms as one percentage
+    rest_percentage = (rest_count / total_count) * 100
+    # Create labels for selected symptoms
+    selected_labels = [symptom.symptom_title for symptom in selected_symptoms]
+    selected_labels.append('others')  # Add 'others' label
+    # Create data for selected symptoms and rest
+    selected_data = selected_percentage + [rest_percentage]
+
+    return {
+        'labels': selected_labels,
+        'data': selected_data,
+    }
+
+
+def symptoms_stats_form_view(request):
+    if request.method == 'POST':
+        form = SymptomSelectionForm(request.POST)
+        if form.is_valid():
+            selected_symptoms = form.cleaned_data['symptoms']
+            update_symptom_counts(selected_symptoms)
+            percentages = calculate_percentage(selected_symptoms)
+            return JsonResponse({'percentages': percentages})
+    else:
+        form = SymptomSelectionForm()
+    return render(request, 'Allergy_Hub.html', {'form': form})

@@ -45,3 +45,40 @@ class Ryegrass(models.Model):
     # return pyegrass record
     def __str__(self):
         return "{}, {}, {}".format(self.rye_lat, self.rye_lon, self.rye_date)
+
+
+# symptom record model
+class Symptom(models.Model):
+    # id
+    symptom_id = models.IntegerField(primary_key=True, auto_created=True, null=False)
+    # title
+    symptom_title = models.CharField(max_length=100, default=None, null=True)
+
+    # return symptom record
+    def __str__(self):
+        return "{}".format(self.rye_title)
+
+class Recommend(models.Model):
+    recommend_id = models.IntegerField(primary_key=True, auto_created=True, null=False)
+    recommend_title = models.CharField(max_length=100, default=None, null=True)
+
+    def __str__(self):
+        return "{}".format(self.recommend_title)
+
+class Symptom_recommends(models.Model):
+    symp_rec_id = models.IntegerField(primary_key=True, auto_created=False, null=False)
+    symptom_id = models.IntegerField(null=False)
+    recommend_id = models.IntegerField(null=False)
+
+    def __str__(self):
+        return "{}, {}".format(self.symptom_id, self.recommend_id)
+
+
+class Symptom_statistics(models.Model):
+    symptom_id = models.IntegerField(primary_key=True, auto_created=False, null=False)
+    symptom_count = models.IntegerField(null=False, default=0)
+
+    def __str__(self):
+        return "{}, {}".format(self.symptom_id, self.symptom_count)
+
+

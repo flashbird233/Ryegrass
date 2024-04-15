@@ -1,4 +1,5 @@
 from django import forms
+from .models import Symptom
 
 class ExposureTimeForm(forms.Form):
     duration = forms.IntegerField(
@@ -9,6 +10,21 @@ class ExposureTimeForm(forms.Form):
     )
 
 
+class SymptomForm(forms.Form):
+    symptoms = forms.ModelMultipleChoiceField(
+        queryset=Symptom.objects.all(),
+        widget=forms.CheckboxSelectMultiple
+    )
 
 
+class SymptomSelectionForm(forms.Form):
+    symptoms = forms.ModelMultipleChoiceField(
+        queryset=Symptom.objects.all(),
+        widget=forms.CheckboxSelectMultiple
+    )
 
+class SymptomReleiferForm(forms.Form):
+    symptoms = forms.ModelMultipleChoiceField(
+        queryset=Symptom.objects.all(),
+        widget=forms.CheckboxSelectMultiple
+    )
