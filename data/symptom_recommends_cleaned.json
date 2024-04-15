@@ -1,0 +1,26 @@
+[
+  {
+    "model": "Breathe_Ease_Home.symptom_recommends",
+    "pk": 1,
+    "fields": {
+      "symptom_id": 1,
+      "recommend_id": 1
+    }
+  },
+  {
+    "model": "Breathe_Ease_Home.symptom_recommends",
+    "pk": 2,
+    "fields": {
+      "symptom_id": 2,
+      "recommend_id": 3
+    }
+  },
+  {
+    "model": "Breathe_Ease_Home.symptom_recommends",
+    "pk": 3,
+    "fields": {
+      "symptom_id": 3,
+      "recommend_id": 4
+    }
+  }
+]

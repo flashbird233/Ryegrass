@@ -1,0 +1,44 @@
+[
+  {
+    "model": "Breathe_Ease_Home.symptom",
+    "pk": 1,
+    "fields": {
+      "symptom_title": "Sneezing"
+    }
+  },
+  {
+    "model": "Breathe_Ease_Home.symptom",
+    "pk": 2,
+    "fields": {
+      "symptom_title": "Runny or stuffy nose"
+    }
+  },
+  {
+    "model": "Breathe_Ease_Home.symptom",
+    "pk": 3,
+    "fields": {
+      "symptom_title": "Itchy nose, mouth, or throat"
+    }
+  },
+  {
+    "model": "Breathe_Ease_Home.symptom",
+    "pk": 4,
+    "fields": {
+      "symptom_title": "Itchy, red, or watery eyes"
+    }
+  },
+  {
+    "model": "Breathe_Ease_Home.symptom",
+    "pk": 5,
+    "fields": {
+      "symptom_title": "Headaches"
+    }
+  },
+  {
+    "model": "Breathe_Ease_Home.symptom",
+    "pk": 6,
+    "fields": {
+      "symptom_title": "Coughing"
+    }
+  }
+]

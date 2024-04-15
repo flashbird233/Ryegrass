@@ -1,0 +1,44 @@
+[
+  {
+    "model": "Breathe_Ease_Home.symptom_statistics",
+    "pk": 1,
+    "fields": {
+      "symptom_count": 0
+    }
+  },
+  {
+    "model": "Breathe_Ease_Home.symptom_statistics",
+    "pk": 2,
+    "fields": {
+      "symptom_count": 0
+    }
+  },
+  {
+    "model": "Breathe_Ease_Home.symptom_statistics",
+    "pk": 3,
+    "fields": {
+      "symptom_count": 0
+    }
+  },
+  {
+    "model": "Breathe_Ease_Home.symptom_statistics",
+    "pk": 4,
+    "fields": {
+      "symptom_count": 0
+    }
+  },
+  {
+    "model": "Breathe_Ease_Home.symptom_statistics",
+    "pk": 5,
+    "fields": {
+      "symptom_count": 0
+    }
+  },
+  {
+    "model": "Breathe_Ease_Home.symptom_statistics",
+    "pk": 6,
+    "fields": {
+      "symptom_count": 0
+    }
+  }
+]
