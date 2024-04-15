@@ -18,15 +18,19 @@
         <div class="container px-4 px-lg-5">
             <div class="row gx-0 justify-content-center">
                 <div class="tab-container col-lg-12">
-                    <button class="tablinks" onclick="openTab(event, 'CalendarTab')">Reminder</button>
-                    <button class="tablinks active" onclick="openTab(event, 'RelieferTab')">Reliefer</button>
-                    <button class="tablinks" onclick="openTab(event, 'RateTab')">Symptom rate</button>
-
+                    <div class="tab-bar">
+                        <button class="tablinks" onclick="openTab(event, 'CalendarTab')">Reminder</button>
+                        <button class="tablinks active" onclick="openTab(event, 'RelieferTab')">Reliefer</button>
+                        <button class="tablinks" onclick="openTab(event, 'RateTab')">Symptom rate</button>
+                    </div>
                     <div id="CalendarTab" class="tabcontent">
                         <h3>Generate a reminder background</h3>
-                        <div class="container px-4 px-lg-5">
-                            <div class="col-lg-4">
-                                <form>
+                        <div class="container row mt-4 px-4 px-lg-5">
+                            <div class="col-lg-6">
+                                <form id="calendar_form"
+                                      method="post"
+                                      action="{% url 'generate_calendar_form' %}"
+                                >
                                     <div class="d-flex align-items-center gap-1 my-2">
                                         <label>
                                             Selecting days to have medicine:
@@ -51,13 +55,14 @@
                                             <input type="text"/>
                                         </label>
                                     </div>
-
+                                    <div class="mt-2 px-4">
+                                        <button disabled type="submit" onclick="alert('it\'s not implemented yet.')">generate</button>
+                                    </div>
                                 </form>
-                                <div class="mt-2 px-4">
-                                    <button type="button" onclick="console.log('clicked')">generate</button>
-                                </div>
                             </div>
-                            <div class="col-lg-8">
+                            <div class="col-lg-2">
+                            </div>
+                            <div class="col-lg-4">
                                 <img class="img-fluid" src="{% static 'images//calendar.png' %}" alt="calendar"/>
                             </div>
                         </div>
@@ -65,32 +70,36 @@
 
                     <div id="RelieferTab" class="tabcontent">
                         <h3>Non-Medical Symptom reliefer</h3>
-                        <div class="container px-4 px-lg-5">
-                            <div class="col-lg-4">
-<!--                                 <form id="symptom-reliefer-form"-->
-<!--                                       method="post"-->
-<!--                                       action="{% url 'symptom-reliefer-form' %}">-->
-<!--                                    {% for symptom in symptoms %}-->
-<!--                                        <div class="d-flex align-items-center gap-1 my-2">-->
-<!--                                            <label>-->
-<!--                                                <input type="checkbox"-->
-<!--                                                       name="{{ symptoms.symptom_id }}"-->
-<!--                                                       value="{{ symptoms.symptom_id }}"-->
-<!--                                                />-->
-<!--                                                {{ symptoms.symptom_title }}-->
-<!--                                            </label>-->
-<!--                                        </div>-->
-<!--                                    {% endfor %}-->
-<!--                                    {% csrf_token %}-->
-<!--                                    {{ form.as_p }}-->
-<!--                                    <div class="mt-2 px-4">-->
-<!--                                        <button type="submit" onclick="console.log('clicked')">Submit</button>-->
-<!--                                    </div>-->
-<!--                                </form>-->
+                        <div class="container row mt-4 px-4 px-lg-5">
+                            <div class="col-lg-5">
+                                <h4>Select symptoms</h4>
+                                <form id="symptom_relief_form"
+                                      method="post"
+                                      action="{% url 'symptom_relief_form' %}"
+                                >
+                                    {% csrf_token %}
+                                    {% for symptom in symptoms %}
+                                    <div class="d-flex align-items-center gap-1 my-2">
+                                        <label>
+                                            <input type="checkbox"
+                                                   id="{{ symptom.symptom_id }}"
+                                                   name="symptoms"
+                                                   value="{{ symptom.symptom_id }}">
+                                            {{ symptom.symptom_title }}
+                                        </label>
+                                    </div>
+                                    {% endfor %}
+
+                                    <div class="mt-4">
+                                        <button type="submit">Submit</button>
+                                    </div>
+                                </form>
                             </div>
-                            <div class="col-lg-8">
+                            <div class="col-lg-1">
+                            </div>
+                            <div class="col-lg-6">
                                 <h4>Take the following action</h4>
-                                <div class="reliefer-result">
+                                <div class="relief-result">
                                 </div>
                             </div>
                         </div>
@@ -98,24 +107,40 @@
 
                     <div id="RateTab" class="tabcontent">
                         <h3>Symptom Rate</h3>
-                        <div class="container px-4 px-lg-5">
-                            <div class="col-lg-4">
-                                <form id="symptom-stats-form" method="post" action="{% url 'select_symptoms' %}">
+                        <div class="container row mt-4 px-4 px-lg-5">
+                            <div class="col-lg-5">
+                                <h4>Select symptoms</h4>
+                                <form id="symptom-stats-form"
+                                      method="post"
+                                      action="{% url 'symptom_stats_form' %}">
                                     {% csrf_token %}
-                                    {{ form.as_p }}
+                                    {% for symptom in symptoms %}
+                                    <div class="d-flex align-items-center gap-1 my-2">
+                                        <label>
+                                            <input type="checkbox"
+                                                   id="{{ symptom.symptom_id }}"
+                                                   name="symptoms"
+                                                   value="{{ symptom.symptom_id }}">
+                                            {{ symptom.symptom_title }}
+                                        </label>
+                                    </div>
+                                    {% endfor %}
 
-                                    <div class="mt-2 px-4">
+                                    <div class="mt-4">
                                         <button type="submit">Show</button>
                                     </div>
                                 </form>
                             </div>
-                            <div class="col-lg-8">
+                            <div class="col-lg-1">
+                            </div>
+                            <div class="col-lg-6">
                                 <div id="chart-container" style="width: 75%;">
-                                    <canvas id="rate-chart" data-url="{% url 'rate-chart' %}"></canvas>
+                                    <canvas id="rate-chart"></canvas>
                                 </div>
                             </div>
                         </div>
                     </div>
+
                 </div>
             </div>
         </div>
@@ -145,8 +170,8 @@
             evt.currentTarget.className += " active";
         }
 
-        function handleRelieferForm(){
-            const form = document.getElementById('symptom-reliefer-form');
+        function handleReliefForm(){
+            const form = document.getElementById('symptom_relief_form');
             form.addEventListener('submit', function(event) {
                 event.preventDefault(); // Prevent default form submission
                 const formData = new FormData(form); // Get form data
@@ -165,7 +190,7 @@
                     return response.json();
                 })
                 .then(function(data) {
-                    document.querySelector('.reliefer-result').innerHTML = data.result_html;
+                    document.querySelector('.relief-result').innerHTML = data.result_html;
                 })
                 .catch(function(error) {
                     console.error('Fetch Error: ', error);
@@ -183,7 +208,6 @@
                     method: 'POST',
                     body: formData,
                     headers: {
-                        'X-Requested-With': 'XMLHttpRequest',
                         'X-CSRFToken': '{{ csrf_token }}'
                     }
                 })
@@ -225,8 +249,9 @@
         }
 
         document.addEventListener('DOMContentLoaded', function() {
+            document.querySelector('div.tab-container button.tablinks.active').click()
             renderChart(sampleRateData);
-            handleRelieferForm();
+            handleReliefForm();
             handleStatisticsForm();
         });
     </script>

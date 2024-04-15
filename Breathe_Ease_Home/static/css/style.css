@@ -11220,3 +11220,46 @@ body {
 .footer {
   padding: 5rem 0;
 }
+.tab-container .tab-bar{
+  display: flex;
+  align-items: center;
+}
+.tab-container .tab-bar button.tablinks{
+  border: 1px solid #cdcaca4a;
+  background: #ebebeb;
+  color: #5e5e5e;
+  border-radius: 0;
+  transition: all 0.3s ease-in-out;
+}
+.tab-container .tab-bar button.tablinks:first-child {
+  border-radius: 5px 0 0 0;
+}
+.tab-container .tab-bar button.tablinks:last-child {
+  border-radius: 0 5px 0 0;
+}
+.tab-container .tab-bar button.tablinks.active{
+  background: #006ad2;
+  color: #fff;
+}
+.tab-container .tabcontent{
+  box-shadow: 2px 2px 3px 0 #cdcaca4a;
+  padding: 10px;
+  border-radius: 0 0 5px;
+  border: 1px solid #cdcaca4a;
+  transition: all 0.3s ease-in-out;
+}
+
+.projects-section button[type='submit']{
+  padding: 7px 10px;
+  background: #0d6efd;
+  color: #fff;
+  border-radius: 5px;
+  outline: none;
+  border:none;
+}
+.relief-result li{
+  padding: 5px;
+}
+.relief-result li::marker{
+  content: '\2713';
+}

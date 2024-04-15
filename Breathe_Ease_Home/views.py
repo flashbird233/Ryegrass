@@ -3,11 +3,13 @@ import json
 import pandas as pd
 import requests
 from dateutil.relativedelta import relativedelta
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from django.http import JsonResponse
+from django.template.loader import render_to_string
 from django.utils import timezone
-from Breathe_Ease_Home.models import Ryegrass, Symptom, Symptom_statistics, Symptom_recommends , Recommend
-from .forms import ExposureTimeForm, SymptomForm, SymptomSelectionForm
+from Breathe_Ease_Home.models import Ryegrass, Symptom, SymptomStatistics, SymptomRecommends, Recommend
+from .forms import ExposureTimeForm, SymptomForm
+
 
 # import logging
 #
@@ -34,8 +36,10 @@ def cloth_edu(request):
 def base(request):
     return render(request, 'base.html')
 
-def Allergy_Hub(request):
-    return render(request, 'Allergy_Hub.html')
+
+def allergy_hub(request):
+    symptoms = Symptom.objects.all()
+    return render(request, 'Allergy_Hub.html', {'symptoms': symptoms})
 
 
 def update_ryegrass(request):
@@ -116,35 +120,56 @@ def customer_support_chat(request):
     return render(request, 'chat.html')  # 'chat.html' is the interface
 
 
-# def get_symptoms(request):
-#     symptoms = Symptom.objects.all()
-#     return render(request, 'Allergy_Hub.html', {'symptoms': symptoms})
+def generate_calendar_form(request):
+    return render(request, 'Allergy_Hub.html')
 
-def symptom_reliefer_form_view(request):
+
+def symptom_relief_form(request):
+    if request.method == 'POST':
+        # selected_symptoms_ids = request.POST.getlist('symptoms')
+        # symptoms = Symptom.objects.filter(id__in=selected_symptoms_ids)
+        # print("POST===>>", request.POST, selected_symptoms_ids)
+
+        form = SymptomForm(request.POST)
+        if form.is_valid():
+            selected_symptoms = form.cleaned_data['symptoms']
+            recommend_ids = SymptomRecommends.objects.filter(symptom_id__in=selected_symptoms).values_list(
+                'recommend_id', flat=True)
+            recommends = Recommend.objects.filter(recommend_id__in=recommend_ids).distinct()
+
+            # Render the result template and return as JSON
+            result_html = render_to_string('recommend_template.html', {'recommends': recommends})
+            return JsonResponse({'result_html': result_html})
+    else:
+        symptoms = Symptom.objects.all()
+        form = SymptomForm()
+        return render(request, 'Allergy_Hub.html', {'form': form, 'symptoms': symptoms})
+
+
+def symptom_stats_form(request):
     if request.method == 'POST':
         form = SymptomForm(request.POST)
         if form.is_valid():
             selected_symptoms = form.cleaned_data['symptoms']
-            recommend_ids = Symptom_recommends.objects.filter(symptom_id__in=selected_symptoms).values_list('recommend_id', flat=True)
-            recommends = Recommend.objects.filter(recommend_id__in=recommend_ids)
-
-            # Render the result template and return as JSON
-            result_html = render_to_string('Allergy_Hub.html', {'recommends': recommends})
-            return JsonResponse({'result_html': result_html})
+            update_symptom_counts(selected_symptoms)
+            percentages = calculate_percentage(selected_symptoms)
+            return JsonResponse({'percentages': percentages})
     else:
         form = SymptomForm()
-    return render(request, 'Allergy_Hub.html', {'form': form})
+        symptoms = Symptom.objects.all()
+        return render(request, 'Allergy_Hub.html', {'form': form, 'symptoms': symptoms})
+
 
 def update_symptom_counts(selected_symptoms):
     for symptom in selected_symptoms:
-        symptom_stats, _ = Symptom_statistics.objects.get_or_create(symptom_id=symptom.id)
+        symptom_stats, _ = SymptomStatistics.objects.get_or_create(symptom_id=symptom.symptom_id)
         symptom_stats.symptom_count += 1
         symptom_stats.save()
 
 
 def calculate_percentage(selected_symptoms):
     # Get all symptoms
-    all_symptoms = Symptom_statistics.objects.all()
+    all_symptoms = SymptomStatistics.objects.all()
     # Calculate the total count of all symptoms
     total_count = sum(symptom.symptom_count for symptom in all_symptoms)
     # Calculate the count of selected symptoms
@@ -165,16 +190,3 @@ def calculate_percentage(selected_symptoms):
         'labels': selected_labels,
         'data': selected_data,
     }
-
-
-def symptoms_stats_form_view(request):
-    if request.method == 'POST':
-        form = SymptomSelectionForm(request.POST)
-        if form.is_valid():
-            selected_symptoms = form.cleaned_data['symptoms']
-            update_symptom_counts(selected_symptoms)
-            percentages = calculate_percentage(selected_symptoms)
-            return JsonResponse({'percentages': percentages})
-    else:
-        form = SymptomSelectionForm()
-    return render(request, 'Allergy_Hub.html', {'form': form})

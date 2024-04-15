@@ -2,7 +2,7 @@ from django.contrib import admin
 from django.urls import reverse
 from django.utils.html import format_html
 
-from .models import Location, Ryegrass
+from .models import Location, Ryegrass, Symptom, Recommend, SymptomRecommends, SymptomStatistics
 
 
 class RyegrassAdmin(admin.ModelAdmin):
@@ -18,3 +18,7 @@ class RyegrassAdmin(admin.ModelAdmin):
 
 admin.site.register(Location)
 admin.site.register(Ryegrass, RyegrassAdmin)
+admin.site.register(Symptom)
+admin.site.register(Recommend)
+admin.site.register(SymptomRecommends)
+admin.site.register(SymptomStatistics)
