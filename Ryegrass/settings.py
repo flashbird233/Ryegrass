@@ -99,7 +99,7 @@ DATABASES = {
         'NAME': 'ryegrassdb',
         'USER': 'jnhhpcgdav',
         'PASSWORD': 'TP30ryegrass',
-        'HOST': 'ryegrassdb.mysql.database.azure.com',
+        'HOST': 'ryegrassdb2.mysql.database.azure.com',
         'PORT': '3306',
         # 'OPTIONS': {
         #     'ssl': {
