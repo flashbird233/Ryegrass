@@ -80,32 +80,11 @@ WSGI_APPLICATION = 'Ryegrass.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/5.0/ref/settings/#databases
 
-# local database
-# DATABASES = {
-#     'default': {
-#         'ENGINE': 'django.db.backends.mysql',
-#         'NAME': 'ryegrassdb',
-#         'USER': 'root',
-#         'PASSWORD': 'qwe123zxc',
-#         'HOST': 'localhost',
-#         'PORT': '3306',
-#     }
-# }
-
 # server database
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'ryegrassdb',
-        'USER': 'jnhhpcgdav',
-        'PASSWORD': 'TP30ryegrass',
-        'HOST': 'ryegrassdb2.mysql.database.azure.com',
-        'PORT': '3306',
-        # 'OPTIONS': {
-        #     'ssl': {
-        #         'ca': BASE_DIR / 'DigiCertGlobalRootCA.crt.pem'
-        #     }
-        # }
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': BASE_DIR / 'db.sqlite3',
     }
 }
 
