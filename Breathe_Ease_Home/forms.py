@@ -19,9 +19,9 @@ class SymptomForm(forms.Form):
 
 
 class GenerateCalendarForm(forms.Form):
-    duration = forms.IntegerField(
-        label='Duration',
-        help_text='(in hours)',
-        widget=forms.TextInput(attrs={'placeholder': 'Please enter duration time (in hours).'}),
-        label_suffix=''
-    )
+    color = forms.CharField(max_length=10)
+    summary = forms.CharField(max_length=100)
+    start_date = forms.DateField()
+    time = forms.TimeField()
+    duration = forms.IntegerField()
+    end = forms.IntegerField()

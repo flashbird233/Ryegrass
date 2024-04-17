@@ -19,51 +19,82 @@
             <div class="row gx-0 justify-content-center">
                 <div class="tab-container col-lg-12">
                     <div class="tab-bar">
-                        <button class="tablinks" onclick="openTab(event, 'CalendarTab')">Reminder</button>
-                        <button class="tablinks active" onclick="openTab(event, 'RelieferTab')">Reliefer</button>
+                        <button class="tablinks active" onclick="openTab(event, 'CalendarTab')">Reminder</button>
+                        <button class="tablinks" onclick="openTab(event, 'RelieferTab')">Reliefer</button>
                         <button class="tablinks" onclick="openTab(event, 'RateTab')">Symptom rate</button>
                     </div>
                     <div id="CalendarTab" class="tabcontent">
                         <h3>Generate a reminder background</h3>
                         <div class="container row mt-4 px-4 px-lg-5">
                             <div class="col-lg-6">
-                                <form id="calendar_form"
-                                      method="post"
-                                      action="{% url 'generate_calendar_form' %}"
-                                >
+                                <form id="add_item_to_calendar_form">
                                     <div class="d-flex align-items-center gap-1 my-2">
-                                        <label>
-                                            Selecting days to have medicine:
-                                            <input type="text"/>
-                                        </label>
-                                    </div>
-                                    <div class="d-flex align-items-center gap-1 my-2">
-                                        <label>
-                                            Time to take:
-                                            <input type="text"/>
-                                        </label>
-                                    </div>
-                                    <div class="d-flex align-items-center gap-1 my-2">
+                                        <label><input name="color" type="color" value="#8D00EB"/> </label>
                                         <label>
                                             Medicine name:
-                                            <input type="text"/>
+                                            <input type="text" name="summary"/>
+                                        </label>
+                                    </div>
+                                    <div class="d-flex align-items-center gap-1 my-2">
+                                        <label>
+                                            starting days to have medicine:
+                                            <input type="date" name="startDate"/>
                                         </label>
                                     </div>
                                     <div class="d-flex align-items-center gap-1 my-2">
                                         <label>
                                             Time to take:
-                                            <input type="text"/>
+                                            <input type="time" name="time"/>
+                                        </label>
+                                    </div>
+                                    <div class="d-flex align-items-center gap-1 my-2">
+                                        <label>
+                                            Duration:
+                                            <select name="duration">
+                                                <option value="6">Every 6 hour</option>
+                                                <option value="8">Every 8 hour</option>
+                                                <option value="24">Every day</option>
+                                                <option value="48">Every other day</option>
+                                            </select>
+                                        </label>
+                                    </div>
+                                    <div class="d-flex align-items-center gap-1 my-2">
+                                        <label>
+                                            End:
+                                            <select name="end">
+                                                <option value="7">After a week</option>
+                                                <option value="14">After 2 weeks</option>
+                                                <option value="30">After a month</option>
+                                            </select>
                                         </label>
                                     </div>
                                     <div class="mt-2 px-4">
-                                        <button disabled type="submit" onclick="alert('it\'s not implemented yet.')">generate</button>
+                                        <button type="submit">add</button>
+                                        <button type="reset"
+                                                style="padding: 7px 10px;background: #78909C;color: #fff;border-radius: 5px;outline: none;border: none;"
+                                        >clear all
+                                        </button>
                                     </div>
                                 </form>
                             </div>
                             <div class="col-lg-2">
                             </div>
                             <div class="col-lg-4">
-                                <img class="img-fluid" src="{% static 'images//calendar.png' %}" alt="calendar"/>
+                                <div class="d-flex align-items-center gap-1 my-2">
+                                    <dl id="reminder_items_list" style="height: 144px; overflow: auto"></dl>
+                                </div>
+                                <form id="calendar_form"
+                                      method="post"
+                                      action="{% url 'reminder_form' %}"
+                                >
+                                    {% csrf_token %}
+                                    <label>
+                                        <input type="text" style="display: none" name="data">
+                                    </label>
+                                    <div class="mt-2 px-4">
+                                        <button type="submit">generate</button>
+                                    </div>
+                                </form>
                             </div>
                         </div>
                     </div>
@@ -79,15 +110,15 @@
                                 >
                                     {% csrf_token %}
                                     {% for symptom in symptoms %}
-                                    <div class="d-flex align-items-center gap-1 my-2">
-                                        <label>
-                                            <input type="checkbox"
-                                                   id="{{ symptom.symptom_id }}"
-                                                   name="symptoms"
-                                                   value="{{ symptom.symptom_id }}">
-                                            {{ symptom.symptom_title }}
-                                        </label>
-                                    </div>
+                                        <div class="d-flex align-items-center gap-1 my-2">
+                                            <label>
+                                                <input type="checkbox"
+                                                       id="{{ symptom.symptom_id }}"
+                                                       name="symptoms"
+                                                       value="{{ symptom.symptom_id }}">
+                                                {{ symptom.symptom_title }}
+                                            </label>
+                                        </div>
                                     {% endfor %}
 
                                     <div class="mt-4">
@@ -115,15 +146,15 @@
                                       action="{% url 'symptom_stats_form' %}">
                                     {% csrf_token %}
                                     {% for symptom in symptoms %}
-                                    <div class="d-flex align-items-center gap-1 my-2">
-                                        <label>
-                                            <input type="checkbox"
-                                                   id="{{ symptom.symptom_id }}"
-                                                   name="symptoms"
-                                                   value="{{ symptom.symptom_id }}">
-                                            {{ symptom.symptom_title }}
-                                        </label>
-                                    </div>
+                                        <div class="d-flex align-items-center gap-1 my-2">
+                                            <label>
+                                                <input type="checkbox"
+                                                       id="{{ symptom.symptom_id }}"
+                                                       name="symptoms"
+                                                       value="{{ symptom.symptom_id }}">
+                                                {{ symptom.symptom_title }}
+                                            </label>
+                                        </div>
                                     {% endfor %}
 
                                     <div class="mt-4">
@@ -154,7 +185,7 @@
             data: [35, 13, 15, 37], // Example percentages
         };
 
-        const chartItemColors =['blue', 'pink','green','red','orange','navy'];
+        const chartItemColors = ['blue', 'pink', 'green', 'red', 'orange', 'navy'];
 
         // Handling tab switching
         function openTab(evt, tabName) {
@@ -170,9 +201,9 @@
             evt.currentTarget.className += " active";
         }
 
-        function handleReliefForm(){
+        function handleReliefForm() {
             const form = document.getElementById('symptom_relief_form');
-            form.addEventListener('submit', function(event) {
+            form.addEventListener('submit', function (event) {
                 event.preventDefault(); // Prevent default form submission
                 const formData = new FormData(form); // Get form data
 
@@ -183,24 +214,24 @@
                         'X-CSRFToken': '{{ csrf_token }}' // Add CSRF token
                     }
                 })
-                .then(function(response) {
-                    if (!response.ok) {
-                        throw Error(response.statusText);
-                    }
-                    return response.json();
-                })
-                .then(function(data) {
-                    document.querySelector('.relief-result').innerHTML = data.result_html;
-                })
-                .catch(function(error) {
-                    console.error('Fetch Error: ', error);
-                });
+                    .then(function (response) {
+                        if (!response.ok) {
+                            throw Error(response.statusText);
+                        }
+                        return response.json();
+                    })
+                    .then(function (data) {
+                        document.querySelector('.relief-result').innerHTML = data.result_html;
+                    })
+                    .catch(function (error) {
+                        console.error('Fetch Error: ', error);
+                    });
             });
         }
 
         function handleStatisticsForm() {
             const form = document.getElementById('symptom-stats-form');
-            form.addEventListener('submit', function(event) {
+            form.addEventListener('submit', function (event) {
                 event.preventDefault();
                 const formData = new FormData(form);
 
@@ -211,18 +242,39 @@
                         'X-CSRFToken': '{{ csrf_token }}'
                     }
                 })
-                .then(response => response.json())
-                .then(data => {
-                    renderChart(data);
-                })
-                .catch(error => console.error('Error:', error));
+                    .then(response => response.json())
+                    .then(data => {
+                        renderChart(data);
+                    })
+                    .catch(error => console.error('Error:', error));
             });
         }
 
-        function renderChart(rateData){
+        /*
+        function handleCalendarForm() {
+            const form = document.getElementById('calendar_form');
+            form.addEventListener('submit', function (event) {
+                event.preventDefault();
+                localStorage.setItem("REMINDER", JSON.stringify(reminderItems));
+                const formData = new FormData();
+                formData.append('data',JSON.stringify(reminderItems));
+
+                fetch(this.getAttribute('action'), {
+                    method: 'POST',
+                    body: formData,
+                    headers: {
+                        {#'X-CSRFToken': '{{ csrf_token }}'#}
+                    }
+                })
+                    .then(res=> console.log("RR", res))
+                .catch(error => console.error('Error:', error));
+            });
+        }
+        */
+        function renderChart(rateData) {
             // Get the canvas element
             const rateChartCanvas = document.getElementById('rate-chart');
-            const colors = chartItemColors.slice(0, rateData.data.length-1);
+            const colors = chartItemColors.slice(0, rateData.data.length - 1);
             colors.push('gray'); // set the Other's color GRAY
 
             // Create the pie chart
@@ -248,11 +300,61 @@
             });
         }
 
-        document.addEventListener('DOMContentLoaded', function() {
+        const reminderItems = [];
+
+        function handleAddItemToCalendarForm() {
+            const form = document.getElementById('add_item_to_calendar_form');
+            form.addEventListener('submit', function (event) {
+                event.preventDefault();
+                // Manually construct form data object
+                const formData = {
+                    color: form.querySelector('input[name="color"]').value,
+                    summary: form.querySelector('input[name="summary"]').value,
+                    startDate: form.querySelector('input[name="startDate"]').value,
+                    time: form.querySelector('input[name="time"]').value,
+                    duration: form.querySelector('select[name="duration"]').value,
+                    end: form.querySelector('select[name="end"]').value
+                };
+
+                // Assuming reminderItems is defined elsewhere in your code
+                reminderItems.push(formData);
+                renderReminderItemsToDataList();
+                document.querySelector('#calendar_form input[name="data"]').value =JSON.stringify(reminderItems);
+            });
+
+            form.addEventListener('reset', function (event) {
+                reminderItems.splice(0, reminderItems.length)
+                const dataList = document.getElementById('reminder_items_list');
+                // Clear existing options
+                dataList.innerHTML = '';
+                document.querySelector('#calendar_form input[name="data"]').value ='';
+            });
+        }
+
+        function renderReminderItemsToDataList() {
+            const dataList = document.getElementById('reminder_items_list');
+
+            // Clear existing options
+            dataList.innerHTML = '';
+
+            // Iterate over reminderItems array and create options
+            reminderItems.forEach(function (item) {
+                const option = document.createElement('dt');
+                option.innerText = `${item.time} - ${item.summary}`; // Assuming summary is the property to be displayed
+                option.style.color = item.color;
+                dataList.appendChild(option);
+            });
+        }
+
+
+        document.addEventListener('DOMContentLoaded', function () {
+            localStorage.removeItem("REMINDER")
             document.querySelector('div.tab-container button.tablinks.active').click()
             renderChart(sampleRateData);
             handleReliefForm();
             handleStatisticsForm();
+            //handleCalendarForm();
+            handleAddItemToCalendarForm();
         });
     </script>
 {% endblock %}

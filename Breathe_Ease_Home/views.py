@@ -8,7 +8,8 @@ from django.http import JsonResponse
 from django.template.loader import render_to_string
 from django.utils import timezone
 from Breathe_Ease_Home.models import Ryegrass, Symptom, SymptomStatistics, SymptomRecommends, Recommend
-from .forms import ExposureTimeForm, SymptomForm
+from .forms import ExposureTimeForm, SymptomForm, GenerateCalendarForm
+from datetime import datetime, timedelta
 
 
 # import logging
@@ -120,16 +121,8 @@ def customer_support_chat(request):
     return render(request, 'chat.html')  # 'chat.html' is the interface
 
 
-def generate_calendar_form(request):
-    return render(request, 'Allergy_Hub.html')
-
-
 def symptom_relief_form(request):
     if request.method == 'POST':
-        # selected_symptoms_ids = request.POST.getlist('symptoms')
-        # symptoms = Symptom.objects.filter(id__in=selected_symptoms_ids)
-        # print("POST===>>", request.POST, selected_symptoms_ids)
-
         form = SymptomForm(request.POST)
         if form.is_valid():
             selected_symptoms = form.cleaned_data['symptoms']
@@ -190,3 +183,82 @@ def calculate_percentage(selected_symptoms):
         'labels': selected_labels,
         'data': selected_data,
     }
+
+
+def generate_calendar_form(request):
+    if request.method == 'POST':
+        form = request.POST.get('data')
+        form_data_array = json.loads(form)
+        processed_data_list = []
+
+        smallest_date = None
+        for form_data in form_data_array:
+            color = form_data['color']
+            summary = form_data['summary']
+            start_date = form_data['startDate']
+            time = form_data['time']
+            duration = int(form_data['duration'])
+            end = int(form_data['end'])
+
+            start_datetime_str = start_date + ' ' + time
+            event_start = datetime.strptime(start_datetime_str, '%Y-%m-%d %H:%M')
+            event_end = datetime(event_start.year, event_start.month, event_start.day, 23, 59, 0) + timedelta(days=end)
+
+            if smallest_date is None:
+                smallest_date = event_start
+
+            if event_start < smallest_date:
+                smallest_date = event_start
+
+            iter_date = event_start
+            while iter_date <= event_end:
+                iter_date += timedelta(hours=duration)
+
+                # Append processed data to the list
+                processed_data_list.append({
+                    'color': color,
+                    'summary': summary,
+                    'start': iter_date.strftime('%Y%m%dT%H%M00Z'),
+                    'end': iter_date.strftime('%Y%m%dT%H%M00Z'),
+                    'day': iter_date.day,
+                    'time': iter_date.strftime('%H:%M'),
+                })
+
+        current_date = smallest_date
+        current_month = current_date.strftime('%B %Y')
+
+        # Determine the start day of the month (Monday being 0, Sunday being 6)
+        start_day_of_month = datetime(current_date.year, current_date.month, 1).weekday()
+
+        # Generate all days of the current month
+        days_in_month = []
+
+        # Fill in empty days at the beginning of the month
+        for _ in range(start_day_of_month):
+            days_in_month.append(None)
+
+        # Generate remaining days of the current month
+        first_day_of_month = datetime(current_date.year, current_date.month, 1)
+        while first_day_of_month.month == current_date.month:
+            days_in_month.append(first_day_of_month)
+            first_day_of_month += timedelta(days=1)
+
+        # Calculate the last day of the month
+        last_day_of_month = current_date.replace(day=1) + timedelta(days=32)
+        last_day_of_month = last_day_of_month.replace(day=1) - timedelta(days=1)
+
+        # Get the weekday of the last day of the month (Monday being 0, Sunday being 6)
+        weekday_of_last_day = last_day_of_month.weekday()
+
+        # Fill in empty days at the end of the month
+        for _ in range(6 - weekday_of_last_day):
+            days_in_month.append(None)
+
+        return render(request, 'reminder_calendar.html', {
+            'current_month': current_month,
+            'days_in_month': days_in_month,
+            'events': processed_data_list
+        })
+    else:
+        print("REJECT!!!!!!!!!!!!!")
+        return redirect('Allergy_Hub.html')

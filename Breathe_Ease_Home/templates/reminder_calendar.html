@@ -1,10 +1,220 @@
+{% load static %}
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Reminder</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Reminder calendar</title>
+    <style>
+        :root{
+            --circle-color: rgb(121, 134, 203);
+        }
+        html, body {
+            font-family: Roboto, Helvetica, Arial, sans-serif;
+        }
+        .container{
+            width: 80%;
+            min-height: 100vh;
+            margin: 25px auto;
+        }
+        table {
+            border-collapse: collapse;
+            width: 100%;
+        }
+        th, td {
+            border: rgb(218, 220, 224) 1px solid;
+            padding: 8px;
+            text-align: left;
+        }
+        th {
+            text-align: center;
+            text-transform: uppercase;
+            border-bottom-width: 0;
+            color: #70757a;
+            font-size: 11px;
+            font-weight: 500;
+            line-height: 20px;
+        }
+        td {
+            font-size: 14px;
+            line-height: 30px;
+            color: #70757a;
+            text-align: center;
+            position: relative;
+            width: calc(100% / 7);
+        }
+        tr:nth-child(2) td{
+            border-top-width: 0;
+        }
+        .day-cell {
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+            min-height: 60px;
+        }
+        .day-label {;
+            margin-top: 8px;
+            font-size: 12px;
+            font-weight: 500;
+            letter-spacing: 0.3px;
+            display: inline-block;
+            text-align: center;
+            white-space: nowrap;
+            min-width: 24px;
+            width: 100%;
+            color: rgb(60, 64, 67);
+            line-height: 16px;
+            pointer-events: auto;
+            position: absolute;
+            top: 10px;
+        }
+        .events{
+            margin-top: 30px;
+        }
+        .event {
+                padding: 2px 4px;
+                font-size: 12px;
+                border-radius: 3px;
+                white-space: nowrap;
+                overflow: hidden;
+                text-overflow: ellipsis;
+                display: flex;
+                height: 18px;
+                line-height: 16px;
+                color: rgb(60, 64, 67);
+                align-items: center;
+                gap: 5px;
+                cursor: pointer;
+        }
+        .circle{
+            display: inline-block;
+            width: 7px;
+            height: 7px;
+            border-radius: 50%;
+            background-color: var(--circle-color);
+            box-shadow: 0 0 2px 0 var(--circle-color);
+        }
+        .time{
+            color: #455A64
+        }
+        .title{
+            font-weight: 600;
+        }
+        .btn-download{
+            font-size: 13px;
+            text-decoration: none;
+            color: white;
+            background: #2196F3;
+            padding: 5px 10px;
+            border-radius: 8px;
+            margin-left: 30px;
+            font-weight: 400;
+            cursor: pointer;
+        }
+    </style>
 </head>
 <body>
+    <div class="container">
+        <h2>
+            <span>{{ current_month }}</span>
+            <a class="btn-download" href="#" onclick="downloadICS(event, {{ events }})" >Download .ics</a>
+        </h2>
 
+        <table>
+            <tr>
+                <th>Mon</th>
+                <th>Tue</th>
+                <th>Wed</th>
+                <th>Thu</th>
+                <th>Fri</th>
+                <th>Sat</th>
+                <th>Sun</th>
+            </tr>
+            <tr>
+                {% for day in days_in_month %}
+                    <td>
+                        <div class="day-cell">
+                            <h2 class="day-label">{{ day.day }}</h2>
+                            <div class="events">
+                                {% for event in events %}
+                                    {% if event.day == day.day %}
+                                        <div class="event">
+                                            <span class="circle" style="--circle-color: {{ event.color }}"></span>
+                                            <span class="time">{{ event.time }}</span>
+                                            <span class="title">{{ event.summary }}</span>
+                                        </div>
+                                    {% endif %}
+                                {% endfor %}
+                            </div>
+                        </div>
+                    </td>
+                    {% if day.weekday == 6 and not forloop.last %}
+                        </tr>
+                        <tr>
+                    {% endif %}
+                {% endfor %}
+                </tr>
+        </table>
+    </div>
+    <script>
+        function downloadICS(e,event_data) {
+            e.preventDefault();
+
+            // Generate .ics file content
+            const ics_content = generateICSContent(event_data);
+
+            // Create a blob with the .ics file content
+            const blob = new Blob([ics_content], { type: 'text/calendar' });
+
+            // Create a URL for the blob
+            const url = window.URL.createObjectURL(blob);
+
+            // Create a link element and set its href attribute to the URL
+            const link = document.createElement('a');
+            link.href = url;
+
+            // Set the filename for the download
+            link.setAttribute('download', 'calendar.ics');
+
+            // Append the link to the document body
+            document.body.appendChild(link);
+
+            // Trigger the click event on the link to start the download
+            link.click();
+
+            // Remove the link from the document body
+            document.body.removeChild(link);
+        }
+
+        function generateICSContent(event_data) {
+            let ics_content = 'BEGIN:VCALENDAR\nVERSION:2.0\nPRODID:-//Google Inc//Google Calendar 70.9054//EN\n';
+            for (let i = 0; i < event_data.length; i++) {
+                const event = event_data[i];
+                ics_content += 'BEGIN:VEVENT\n';
+                ics_content += 'SUMMARY:' + event.summary + '\n';
+                ics_content += 'DTSTART:' + event.start + '\n';
+                ics_content += 'DTEND:' + event.end + '\n';
+                ics_content += 'END:VEVENT\n';
+            }
+            ics_content += 'END:VCALENDAR';
+            return ics_content;
+        }
+
+        function formatDate(dateString) {
+            const date = new Date(dateString);
+            const year = date.getFullYear();
+            const month = padNumber(date.getMonth() + 1); // Month is zero-based
+            const day = padNumber(date.getDate());
+            const hours = padNumber(date.getHours());
+            const minutes = padNumber(date.getMinutes());
+            const seconds = padNumber(date.getSeconds());
+            return year + month + day + 'T' + hours + minutes + seconds + 'Z';
+        }
+
+        function padNumber(number) {
+            return number < 10 ? '0' + number : number;
+        }
+    </script>
 </body>
 </html>

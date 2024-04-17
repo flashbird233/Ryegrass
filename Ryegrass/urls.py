@@ -33,7 +33,7 @@ urlpatterns = [
     path('chat/', Breathe_Ease_Home.views.customer_support_chat, name='customer_support_chat'),
     path('cloth_sug', Breathe_Ease_Home.views.suggest_clothing, name='suggest_clothing'),
     path('Allergy_Hub/', Breathe_Ease_Home.views.allergy_hub, name='allergy_hub'),
-    path('Allergy_Hub/generate_calendar_form', Breathe_Ease_Home.views.generate_calendar_form, name='generate_calendar_form'),
     path('Allergy_Hub/symptom_relief_form', Breathe_Ease_Home.views.symptom_relief_form, name='symptom_relief_form'),
     path('Allergy_Hub/symptom_stats_form', Breathe_Ease_Home.views.symptom_stats_form, name='symptom_stats_form'),
+    path('reminder_calendar/', Breathe_Ease_Home.views.generate_calendar_form, name='reminder_form'),
 ]
