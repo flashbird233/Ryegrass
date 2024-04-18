@@ -28,6 +28,7 @@
                         <div class="container row mt-4 px-4 px-lg-5">
                             <div class="col-lg-6">
                                 <form id="add_item_to_calendar_form">
+                                    {% csrf_token %}
                                     <div class="d-flex align-items-center gap-1 my-2">
                                         <label><input name="color" type="color" value="#8D00EB"/> </label>
                                         <label>
