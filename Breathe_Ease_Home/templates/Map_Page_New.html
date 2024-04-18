@@ -19,89 +19,93 @@
             }
 
             body {
+                height: 100vh;
                 background-image: linear-gradient(to bottom, rgba(0, 0, 0, 0.3) 0%, rgba(0, 0, 0, 0.7) 75%, #000 100%), url("{% static 'images/bg-masthead.jpg' %}");
                 background-size: cover;
+                background-position: center;
                 background-repeat: no-repeat;
             }
         </style>
     </header>
+    <body>
     <!-- A button to find the user's location -->
     <button id="find-me"></button>
+    <!-- Add a title of the Map -->
+    <h1 style="color: white; text-align: center; margin-top: 7%">Check the Ryegrass Location</h1>
     <!--The div element for the map-->
-    <div id="map" style="height: 700px; width: 75%; margin: 100px auto"></div>
-
+    <div id="map" style="height: 75%; width: 75%; margin-right: auto; margin-left: auto"></div>
+    </body>
     <!-- Google Map JS -->
-    <section>
-        <script>
-            async function initMap() {
-                /*Define the Australia Boundary*/
-                var ausBounds = {
-                    north: -9,
-                    south: -45,
-                    east: 155,
-                    west: 111
-                }
-                /*Map Options*/
-                const map = new google.maps.Map(document.getElementById('map'), {
-                    zoom: 10,
-                    center: {lat: -37.813611, lng: 144.963056},
-                    streetViewControl: false,
-                    minZoom: 4,
-                    disableDefaultUI: true,
-                    fullscreenControl: true,
-                    restriction: {
-                        latLngBounds: ausBounds,
-                        strictBounds: true
-                    }
-                });
-
-                /*Find me button*/
-                const locationButton = document.getElementById("find-me");
-                locationButton.style.visibility = "visible";
-                locationButton.classList.add("map-button");
-                map.controls[google.maps.ControlPosition.RIGHT_TOP].push(locationButton);
-
-                /* Handle location error */
-                locationButton.addEventListener("click", () => {
-                    if (navigator.geolocation) {
-                        navigator.geolocation.getCurrentPosition(
-                            (position) => {
-                                const pos = {
-                                    lat: position.coords.latitude,
-                                    lng: position.coords.longitude,
-                                };
-                                map.setCenter(pos);
-                                map.setZoom(16);
-                            },
-                            () => {
-                                handleLocationError(true, infoWindow, map.getCenter());
-                            }
-                        );
-                    } else {
-                        // Browser doesn't support Geolocation
-                        handleLocationError(false, infoWindow, map.getCenter());
-                    }
-                });
-
-                // Show the Ryegrass location
-                {% for location in locations %}
-                    new google.maps.Marker({
-                        position: {
-                            lat: {{ location.rye_lat }}, lng: {{ location.rye_lon }}
-                        },
-                        map: map,
-                        title: '{{ location.rye_vernacular_name }}',
-                        icon: {
-                            url: "{% static 'images/map_icon.png' %}",
-                            scaledSize: new google.maps.Size(30, 30)
-                        }
-                    });
-                {% endfor %}
+    <script>
+        async function initMap() {
+            /*Define the Australia Boundary*/
+            var ausBounds = {
+                north: -9,
+                south: -45,
+                east: 155,
+                west: 111
             }
-        </script>
+            /*Map Options*/
+            const map = new google.maps.Map(document.getElementById('map'), {
+                zoom: 10,
+                center: {lat: -37.813611, lng: 144.963056},
+                streetViewControl: false,
+                minZoom: 0,
+                disableDefaultUI: true,
+                fullscreenControl: true,
+                restriction: {
+                    latLngBounds: ausBounds,
+                    strictBounds: true
+                }
+            });
 
-        <!-- Load the Google Map API -->
-        <script defer
-                src="https://maps.googleapis.com/maps/api/js?key=AIzaSyA7Cnsz3PzLoUoFKL-Mow0AvTtoLd99drA&callback=initMap"></script>
-    </section>
+            /*Find me button*/
+            const locationButton = document.getElementById("find-me");
+            locationButton.style.visibility = "visible";
+            locationButton.classList.add("map-button");
+            map.controls[google.maps.ControlPosition.RIGHT_TOP].push(locationButton);
+
+            /* Handle location error */
+            locationButton.addEventListener("click", () => {
+                if (navigator.geolocation) {
+                    navigator.geolocation.getCurrentPosition(
+                        (position) => {
+                            const pos = {
+                                lat: position.coords.latitude,
+                                lng: position.coords.longitude,
+                            };
+                            map.setCenter(pos);
+                            map.setZoom(13);
+                        },
+                        () => {
+                            handleLocationError(true, infoWindow, map.getCenter());
+                        }
+                    );
+                } else {
+                    // Browser doesn't support Geolocation
+                    handleLocationError(false, infoWindow, map.getCenter());
+                }
+            });
+
+            // Show the Ryegrass location
+            {% for location in locations %}
+                new google.maps.Marker({
+                    position: {
+                        lat: {{ location.rye_lat }}, lng: {{ location.rye_lon }}
+                    },
+                    map: map,
+                    title: '{{ location.rye_vernacular_name }}',
+                    icon: {
+                        url: "{% static 'images/map_icon.png' %}",
+                        scaledSize: new google.maps.Size(30, 30)
+                    }
+                });
+            {% endfor %}
+        }
+    </script>
+
+    <!-- Load the Google Map API -->
+    <script defer
+            src="https://maps.googleapis.com/maps/api/js?key=AIzaSyA7Cnsz3PzLoUoFKL-Mow0AvTtoLd99drA&callback=initMap"></script>
+
 {% endblock %}
