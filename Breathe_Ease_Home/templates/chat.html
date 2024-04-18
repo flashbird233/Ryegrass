@@ -2,32 +2,23 @@
 {% load static %}
 
 {% block content %}
-{#<section class="about-section text-center" id="about">#}
-{#    <p>Please select an option:</p>#}
-{#    <select id="optionSelect">#}
-{#        <option value="data">data</option>#}
-{#        <option value="data visualization">data visualization</option>#}
-{#        <option value="map">map</option>#}
-{#        <option value="display">display</option>#}
-{#        <option value="nearby">nearby</option>#}
-{#        <option value="distribut">distribut</option>#}
-{#        <!-- ... 更多选项 ... -->#}
-{#        <option value="cloth">cloth</option>#}
-{#        <option value="hat">hat</option>#}
-{#        <option value="face mask">face mask</option>#}
-{#        <option value="time">time</option>#}
-{#        <!-- ... 更多选项 ... -->#}
-{#        <option value="educat">educat</option>#}
-{#        <option value="information">information</option>#}
-{#        <option value="info">info</option>#}
-{#    </select>#}
-{#    <button onclick="showUrl()">Submit</button>#}
-{#</section>#}
+    <!--Start of Tawk.to Script-->
+<script type="text/javascript">
+var Tawk_API=Tawk_API||{}, Tawk_LoadStart=new Date();
+(function(){
+var s1=document.createElement("script"),s0=document.getElementsByTagName("script")[0];
+s1.async=true;
+s1.src='https://embed.tawk.to/661fea671ec1082f04e3a16e/1hrman9j2';
+s1.charset='UTF-8';
+s1.setAttribute('crossorigin','*');
+s0.parentNode.insertBefore(s1,s0);
+})();
+</script>
+<!--End of Tawk.to Script-->
     <header class="masthead">
     <div class="container px-4 px-lg-5 d-flex h-100 align-items-center justify-content-center">
         <div class="d-flex justify-content-center">
             <div class="text-center">
-                <!-- Your section content is now here inside the header -->
                 <p>Please select an option:</p>
                 <select id="optionSelect">
                     <option value="data">data</option>
@@ -36,12 +27,10 @@
                     <option value="display">display</option>
                     <option value="nearby">nearby</option>
                     <option value="distribut">distribut</option>
-                    <!-- ... 更多选项 ... -->
                     <option value="cloth">cloth</option>
                     <option value="hat">hat</option>
                     <option value="face mask">face mask</option>
                     <option value="time">time</option>
-                    <!-- ... 更多选项 ... -->
                     <option value="educat">educat</option>
                     <option value="information">information</option>
                     <option value="info">info</option>
@@ -52,6 +41,19 @@
         </div>
     </div>
 </header>
+    <!--Start of Tawk.to Script-->
+<script type="text/javascript">
+var Tawk_API=Tawk_API||{}, Tawk_LoadStart=new Date();
+(function(){
+var s1=document.createElement("script"),s0=document.getElementsByTagName("script")[0];
+s1.async=true;
+s1.src='https://embed.tawk.to/661fea671ec1082f04e3a16e/1hrman9j2';
+s1.charset='UTF-8';
+s1.setAttribute('crossorigin','*');
+s0.parentNode.insertBefore(s1,s0);
+})();
+</script>
+<!--End of Tawk.to Script-->
 
 
 <script>
@@ -65,7 +67,7 @@ function showUrl() {
     const selectedOption = document.getElementById('optionSelect').value;
     let targetUrl = '';
 
-    // 根据选择的选项找到对应的 URL
+    // Find the corresponding URL based on the selected option
     for (const [url, keywords] of Object.entries(mappings)) {
         if (keywords.includes(selectedOption)) {
             targetUrl = url;
@@ -73,7 +75,7 @@ function showUrl() {
         }
     }
 
-    // 如果找到了对应的 URL，则显示
+    //If the corresponding URL is found, display
     if (targetUrl) {
         alert("The URL is: " + targetUrl);
     } else {
