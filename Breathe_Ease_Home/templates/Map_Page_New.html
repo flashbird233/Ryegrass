@@ -27,26 +27,34 @@
                 background-position: center;
                 background-repeat: no-repeat;
             }
+
+            /* Set the style of the map */
+            #map {
+                height: 75%;
+                width: 75%;
+                margin-right: auto;
+                margin-left: auto
+            }
         </style>
     </header>
     <body>
     <!-- A button to find the user's location -->
     <button id="find-me"></button>
     <!-- Add a title of the Map -->
-    <h1 style="color: white; text-align: center; margin-top: 7%">Check the Ryegrass Location</h1>
+    <h1 style="color: white; text-align: center; margin-top: 7%">Check the Ryegrass Location in VIC</h1>
     <!--The div element for the map-->
-    <div id="map" style="height: 75%; width: 75%; margin-right: auto; margin-left: auto"></div>
+    <div id="map"></div>
     </body>
     <!-- Google Map JS -->
     <script>
         async function initMap() {
             /*Define the Australia Boundary*/
-            var ausBounds = {
-                north: -9,
-                south: -45,
-                east: 155,
-                west: 111
-            }
+            const ausBounds = {
+                north: -33,
+                south: -40,
+                east: 152,
+                west: 139
+            };
             /*Map Options*/
             const map = new google.maps.Map(document.getElementById('map'), {
                 zoom: 10,
@@ -65,6 +73,7 @@
             const locationButton = document.getElementById("find-me");
             locationButton.style.visibility = "visible";
             locationButton.classList.add("map-button");
+            locationButton.title = "find your location";
             map.controls[google.maps.ControlPosition.RIGHT_TOP].push(locationButton);
 
             /* Handle location error */

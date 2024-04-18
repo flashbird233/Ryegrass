@@ -1,15 +1,17 @@
 import json
+from datetime import datetime, timedelta
 
 import pandas as pd
 import requests
 from dateutil.relativedelta import relativedelta
-from django.shortcuts import render, redirect
+from django.db.models import Q
 from django.http import JsonResponse
+from django.shortcuts import render, redirect
 from django.template.loader import render_to_string
 from django.utils import timezone
+
 from Breathe_Ease_Home.models import Ryegrass, Symptom, SymptomStatistics, SymptomRecommends, Recommend
-from .forms import ExposureTimeForm, SymptomForm, GenerateCalendarForm
-from datetime import datetime, timedelta
+from .forms import ExposureTimeForm, SymptomForm
 
 
 # import logging
@@ -25,7 +27,16 @@ def rye_map(request):
     # Only keep last 3 years data
     now = timezone.now()
     check_date = now - relativedelta(years=3)
-    ryegrass = Ryegrass.objects.filter(rye_date__gte=check_date).values('rye_lat', 'rye_lon', 'rye_vernacular_name')
+    # The lat should between -33 and -40, lon should between 139 and 152
+    ryegrass = Ryegrass.objects.filter(
+        Q(rye_date__gte=check_date) &
+        Q(rye_lat__gte=-40) &
+        Q(rye_lat__lte=-33) &
+        Q(rye_lon__gte=139) &
+        Q(rye_lon__lte=152)
+    ).values('rye_lat', 'rye_lon', 'rye_vernacular_name')
+    # ryegrass = Ryegrass.objects.filter(rye_date__gte=check_date).values('rye_lat', 'rye_lon', 'rye_vernacular_name')
+
     return render(request, 'Map_Page_New.html', {'locations': ryegrass})
 
 
