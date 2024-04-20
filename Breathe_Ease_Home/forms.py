@@ -17,11 +17,11 @@ class SymptomForm(forms.Form):
         widget=forms.CheckboxSelectMultiple
     )
 
-
-class GenerateCalendarForm(forms.Form):
-    color = forms.CharField(max_length=10)
-    summary = forms.CharField(max_length=100)
-    start_date = forms.DateField()
-    time = forms.TimeField()
-    duration = forms.IntegerField()
-    end = forms.IntegerField()
+#
+# class GenerateCalendarForm(forms.Form):
+#     color = forms.CharField(max_length=10)
+#     summary = forms.CharField(max_length=100)
+#     start_date = forms.DateField()
+#     time = forms.TimeField()
+#     duration = forms.IntegerField()
+#     end = forms.IntegerField()

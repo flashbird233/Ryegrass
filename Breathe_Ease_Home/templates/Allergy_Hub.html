@@ -1,5 +1,92 @@
 {% extends 'base.html' %}
 {% load static %}
+{% block style %}
+    
+.tab-container .tab-bar{
+  display: flex;
+  align-items: center;
+}
+.tab-container .tab-bar button.tablinks{
+  border: 1px solid #cdcaca4a;
+  background: #ebebeb;
+  color: #5e5e5e;
+  border-radius: 0;
+  transition: all 0.3s ease-in-out;
+    padding: 5px 10px;
+}
+.tab-container .tab-bar button.tablinks:first-child {
+  border-radius: 5px 0 0 0;
+}
+.tab-container .tab-bar button.tablinks:last-child {
+  border-radius: 0 5px 0 0;
+}
+.tab-container .tab-bar button.tablinks.active{
+  background: #006ad2;
+  color: #fff;
+}
+.tab-container .tabcontent{
+  box-shadow: 2px 2px 3px 0 #cdcaca4a;
+  padding: 10px;
+  border-radius: 0 0 5px;
+  border: 1px solid #cdcaca4a;
+  transition: all 0.3s ease-in-out;
+}
+
+.projects-section button[type='submit']{
+  padding: 7px 10px;
+  background: #0d6efd;
+  color: #fff;
+  border-radius: 5px;
+  outline: none;
+  border:none;
+}
+.relief-result li{
+  padding: 5px;
+}
+.relief-result li::marker{
+  content: '\2713';
+}
+
+.loading-box {
+  position: absolute;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  right: 0;
+  z-index: 100;
+  width: 100%;
+  height: 100%;
+  border-radius: 8px;
+  animation: blink 1s ease-in-out infinite alternate;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.loading-spinner {
+    width: 30px;
+    height: 30px;
+    border: 4px solid #ccc;
+    border-top: 4px solid #3498db;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+}
+    .hide{
+        display: none;
+    }
+/* Keyframe animation for spinning */
+@keyframes spin {
+    0% { transform: translate(-50%, -50%) rotate(0deg); }
+    100% { transform: translate(-50%, -50%) rotate(360deg); }
+}
+
+/* Keyframe animation for blinking background */
+@keyframes blink {
+    0% { background-color: #f0f0f0; }
+    100% { background-color: #ccc; }
+}
+{% endblock %}
+
 {% block content %}
     <section class="about-section text-center" id="about">
         <div class="container px-4 px-lg-5">
@@ -158,16 +245,19 @@
                                         </div>
                                     {% endfor %}
 
-                                    <div class="mt-4">
+                                    <div class="my-4">
                                         <button type="submit">Show</button>
                                     </div>
                                 </form>
                             </div>
                             <div class="col-lg-1">
                             </div>
-                            <div class="col-lg-6">
-                                <div id="chart-container" style="width: 75%;">
+                            <div class="col-lg-6" style="position:relative;box-shadow: 0 0 2px 0 gray;border-radius: 8px;padding: 10px;">
+                                <div id="chart-container" style="width: 100%;">
                                     <canvas id="rate-chart"></canvas>
+                                </div>
+                                 <div class="loading-box hide">
+                                    <div class="loading-spinner"></div>
                                 </div>
                             </div>
                         </div>
@@ -177,15 +267,9 @@
             </div>
         </div>
     </section>
-
     <script src="https://cdn.jsdelivr.net/npm/chart.js@2.9.3/dist/Chart.min.js"></script>
     <script>
-        // Simulated data (replace with your actual data)
-        const sampleRateData = {
-            labels: ['Sample 1', 'Sample 2', 'Sample 3', 'Others'],
-            data: [35, 13, 15, 37], // Example percentages
-        };
-
+        const sampleRateData = JSON.parse('{{ sampleRateData|escapejs }}');
         const chartItemColors = ['blue', 'pink', 'green', 'red', 'orange', 'navy'];
 
         // Handling tab switching
@@ -215,18 +299,18 @@
                         'X-CSRFToken': '{{ csrf_token }}' // Add CSRF token
                     }
                 })
-                    .then(function (response) {
-                        if (!response.ok) {
-                            throw Error(response.statusText);
-                        }
-                        return response.json();
-                    })
-                    .then(function (data) {
-                        document.querySelector('.relief-result').innerHTML = data.result_html;
-                    })
-                    .catch(function (error) {
-                        console.error('Fetch Error: ', error);
-                    });
+                .then(function (response) {
+                    if (!response.ok) {
+                        throw Error(response.statusText);
+                    }
+                    return response.json();
+                })
+                .then(function (data) {
+                    document.querySelector('.relief-result').innerHTML = data.result_html;
+                })
+                .catch(function (error) {
+                    console.error('Fetch Error: ', error);
+                });
             });
         }
 
@@ -235,6 +319,7 @@
             form.addEventListener('submit', function (event) {
                 event.preventDefault();
                 const formData = new FormData(form);
+                document.querySelector('.loading-box').classList.remove("hide");
 
                 fetch(this.getAttribute('action'), {
                     method: 'POST',
@@ -243,35 +328,20 @@
                         'X-CSRFToken': '{{ csrf_token }}'
                     }
                 })
-                    .then(response => response.json())
-                    .then(data => {
-                        renderChart(data);
-                    })
-                    .catch(error => console.error('Error:', error));
-            });
-        }
-
-        /*
-        function handleCalendarForm() {
-            const form = document.getElementById('calendar_form');
-            form.addEventListener('submit', function (event) {
-                event.preventDefault();
-                localStorage.setItem("REMINDER", JSON.stringify(reminderItems));
-                const formData = new FormData();
-                formData.append('data',JSON.stringify(reminderItems));
-
-                fetch(this.getAttribute('action'), {
-                    method: 'POST',
-                    body: formData,
-                    headers: {
-                        {#'X-CSRFToken': '{{ csrf_token }}'#}
+                 .then(function (response) {
+                    if (!response.ok) {
+                        throw Error(response.statusText);
                     }
+                    return response.json();
                 })
-                    .then(res=> console.log("RR", res))
-                .catch(error => console.error('Error:', error));
+                .then(data => renderChart(data.percentages))
+                .catch(error => {
+                    console.error('Error:', error)
+                    document.querySelector('.loading-box').classList.add("hide");
+                });
             });
         }
-        */
+
         function renderChart(rateData) {
             // Get the canvas element
             const rateChartCanvas = document.getElementById('rate-chart');
@@ -291,7 +361,16 @@
                 options: {
                     responsive: true,
                     legend: {
-                        position: 'top',
+                        display: true,
+                        position: 'bottom', // Position the legend at the bottom
+                        labels: {
+                            usePointStyle: true, // Use point style for legend items
+                            padding: 20, // Adjust padding between legend items
+                            // Customize the label format to include the percentage
+                            callback: function(label, index, labels) {
+                                return label + ': ' + rateData.data[index] + '%';
+                            }
+                        },
                     },
                     title: {
                         display: true,
@@ -299,6 +378,8 @@
                     },
                 },
             });
+
+            document.querySelector('.loading-box').classList.add("hide");
         }
 
         const reminderItems = [];
@@ -347,15 +428,13 @@
             });
         }
 
-
         document.addEventListener('DOMContentLoaded', function () {
             localStorage.removeItem("REMINDER")
             document.querySelector('div.tab-container button.tablinks.active').click()
-            renderChart(sampleRateData);
             handleReliefForm();
             handleStatisticsForm();
-            //handleCalendarForm();
             handleAddItemToCalendarForm();
+            renderChart(sampleRateData);
         });
     </script>
 {% endblock %}

@@ -51,7 +51,9 @@ def base(request):
 
 def allergy_hub(request):
     symptoms = Symptom.objects.all()
-    return render(request, 'Allergy_Hub.html', {'symptoms': symptoms})
+    sample_rate_data = calculate_percentage()
+    sample_rate_data_json = json.dumps(sample_rate_data)
+    return render(request, 'Allergy_Hub.html', {'symptoms': symptoms, 'sampleRateData': sample_rate_data_json})
 
 
 def update_ryegrass(request):
@@ -156,7 +158,7 @@ def symptom_stats_form(request):
         if form.is_valid():
             selected_symptoms = form.cleaned_data['symptoms']
             update_symptom_counts(selected_symptoms)
-            percentages = calculate_percentage(selected_symptoms)
+            percentages = calculate_percentage()
             return JsonResponse({'percentages': percentages})
     else:
         form = SymptomForm()
@@ -171,29 +173,43 @@ def update_symptom_counts(selected_symptoms):
         symptom_stats.save()
 
 
-def calculate_percentage(selected_symptoms):
-    # Get all symptoms
-    all_symptoms = SymptomStatistics.objects.all()
-    # Calculate the total count of all symptoms
-    total_count = sum(symptom.symptom_count for symptom in all_symptoms)
-    # Calculate the count of selected symptoms
-    selected_count = sum(symptom.symptom_count for symptom in selected_symptoms)
-    # Calculate the count of the rest of the symptoms
-    rest_count = total_count - selected_count
-    # Calculate the percentage of selected symptoms
-    selected_percentage = [(symptom.symptom_count / total_count) * 100 for symptom in selected_symptoms]
-    # Calculate the percentage of the rest of the symptoms as one percentage
-    rest_percentage = (rest_count / total_count) * 100
-    # Create labels for selected symptoms
-    selected_labels = [symptom.symptom_title for symptom in selected_symptoms]
-    selected_labels.append('others')  # Add 'others' label
-    # Create data for selected symptoms and rest
-    selected_data = selected_percentage + [rest_percentage]
+def calculate_percentage():
+    symptoms = Symptom.objects.all()
+    statistics = SymptomStatistics.objects.all()
 
-    return {
-        'labels': selected_labels,
-        'data': selected_data,
+    # Calculate total count of all symptoms
+    total_count = sum(statistic.symptom_count for statistic in statistics)
+
+    # Initialize lists to store labels and data
+    labels = []
+    data = []
+
+    for symptom in symptoms:
+        # Find the statistic for the current symptom
+        statistic = statistics.filter(symptom_id=symptom.symptom_id).first()
+        # Calculate the percentage of the symptom count compared to the total count as a floating point number
+        percentage = (statistic.symptom_count / total_count) * 100.0
+        # Format the percentage to have one decimal place
+        formatted_percentage = "{:.1f}".format(percentage)
+        # Append symptom title to labels list
+        labels.append(symptom.symptom_title)
+        # Append formatted percentage to data list
+        data.append(float(formatted_percentage))  # Convert the formatted string back to float
+
+    # Create sample rate data dictionary
+    sampleRateData = {
+        'labels': labels,
+        'data': data,
     }
+
+    # If there are other symptoms not included in the statistics, calculate their total count and percentage
+    if total_count < sum(symptom_count.symptom_count for symptom_count in statistics):
+        other_count = sum(symptom_count.symptom_count for symptom_count in statistics) - total_count
+        other_percentage = (other_count / total_count) * 100
+        sampleRateData['labels'].append('Others')
+        sampleRateData['data'].append(other_percentage)
+
+    return sampleRateData
 
 
 def generate_calendar_form(request):
@@ -271,5 +287,4 @@ def generate_calendar_form(request):
             'events': processed_data_list
         })
     else:
-        print("REJECT!!!!!!!!!!!!!")
         return redirect('Allergy_Hub.html')
