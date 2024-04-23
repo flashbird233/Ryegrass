@@ -30,9 +30,29 @@
     <div id="map"></div>
     </body>
     <script>
-        var map = L.map('map').setView([-37.813611, 144.963056], 10);
+        // Add a boundary to the map
+        const southWest = L.latLng(-38.433859, 140.961682),
+            northEast = L.latLng(-35, 149.976678),
+            bounds = L.latLngBounds(southWest, northEast);
+        // Create the map
+        const map = L.map('map', {
+            maxBounds: bounds,
+            maxBoundsViscosity: 1.0,
+            maxZoom: 18,
+            minZoom: 7
+        }).setView([-37.813611, 144.963056], 10);
+        // Add the OpenStreetMap tiles
         L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
             attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
         }).addTo(map);
+        fetch('api/locations')
+            .then(response => response.json())
+            .then(locations => {
+                locations.forEach(location => {
+                    L.marker([location.rye_lat, location.rye_lon]).addTo(map);
+                    //.bindPopup(location.name)
+                    //.openPopup();
+                });
+            });
     </script>
 {% endblock %}

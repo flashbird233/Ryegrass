@@ -36,4 +36,5 @@ urlpatterns = [
     path('Allergy_Hub/symptom_relief_form', Breathe_Ease_Home.views.symptom_relief_form, name='symptom_relief_form'),
     path('Allergy_Hub/symptom_stats_form', Breathe_Ease_Home.views.symptom_stats_form, name='symptom_stats_form'),
     path('reminder_calendar/', Breathe_Ease_Home.views.generate_calendar_form, name='reminder_form'),
+    path('map/api/locations', Breathe_Ease_Home.views.get_locations, name='get_locations'),
 ]
