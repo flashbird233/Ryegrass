@@ -37,7 +37,7 @@ def rye_map(request):
     ).values('rye_lat', 'rye_lon', 'rye_vernacular_name')
     # ryegrass = Ryegrass.objects.filter(rye_date__gte=check_date).values('rye_lat', 'rye_lon', 'rye_vernacular_name')
 
-    return render(request, 'Map_Page_New.html', {'locations': ryegrass})
+    return render(request, 'Map_Page.html', {'locations': ryegrass})
 
 
 # Cloth Edu Page
