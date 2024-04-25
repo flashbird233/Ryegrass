@@ -40,7 +40,7 @@
                 crossorigin=""></script>
     </header>
     <body>
-    <h1 style="color: white; text-align: center; margin-top: 7%">Check the Ryegrass Location in VIC</h1>
+    <h1 style="color: white; text-align: center; margin-top: 8%">Check the Ryegrass Location in VIC</h1>
     <div id="map"></div>
     <button id="find-me">Find me</button>
     </body>
@@ -73,7 +73,9 @@
                     }).addTo(map);
 
                     // Add a popup to the circle
-                    circle.bindPopup(`<b>Trivial Name:</b> ${location.rye_vernacular_name}`)
+                    circle.bindPopup(`<b>Vernacular Name:</b> ${location.rye_vernacular_name}
+                                    <br><b>Scientific Name:</b> ${location.rye_scientific_name}
+                                    <br><b>Data Source:</b> <a href="https://www.ala.org.au/" target="_blank">Atlas of Living Australia</a>`);
                 });
             });
         // Add a button to find the user's location

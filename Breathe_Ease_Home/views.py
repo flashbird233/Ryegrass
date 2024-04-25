@@ -46,7 +46,7 @@ def get_locations(request):
     # The lat should between -33 and -40, lon should between 139 and 152
     ryegrass = Ryegrass.objects.filter(
         Q(rye_date__gte=check_date)
-    ).values('rye_lat', 'rye_lon', 'rye_vernacular_name')
+    ).values()
     return JsonResponse(list(ryegrass), safe=False)
 
 
