@@ -17,6 +17,20 @@
                 margin-right: auto;
                 margin-left: auto
             }
+
+            #find-me {
+                background-image: url("{% static 'images/loc_button.png' %}");
+                background-size: cover;
+                border: none;
+                padding: 0;
+                width: 40px;
+                height: 40px;
+                cursor: pointer;
+                color: transparent;
+                overflow: hidden;
+                margin-right: 10px;
+                background-color: white;
+            }
         </style>
         <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
               integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="
@@ -28,6 +42,7 @@
     <body>
     <h1 style="color: white; text-align: center; margin-top: 7%">Check the Ryegrass Location in VIC</h1>
     <div id="map"></div>
+    <button id="find-me">Find me</button>
     </body>
     <script>
         // Add a boundary to the map
@@ -45,6 +60,7 @@
         L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
             attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
         }).addTo(map);
+        // Add markers of ryegrass locations to the map
         fetch('api/locations')
             .then(response => response.json())
             .then(locations => {
@@ -60,5 +76,29 @@
                     circle.bindPopup(`<b>Trivial Name:</b> ${location.rye_vernacular_name}`)
                 });
             });
+        // Add a button to find the user's location
+        const findMeControl = L.control({position: 'topright'});
+        findMeControl.onAdd = function (map) {
+            const div = L.DomUtil.create('div', 'leaflet-bar leaflet-control leaflet-control-custom');
+            div.appendChild(document.getElementById('find-me'));
+            return div;
+        };
+        findMeControl.addTo(map);
+        const findMeButton = document.getElementById('find-me');
+        findMeButton.addEventListener('click', () => {
+            if (!navigator.geolocation) {
+                alert('Geolocation is not supported by your browser');
+            } else {
+                navigator.geolocation.getCurrentPosition((position) => {
+                    const {latitude, longitude} = position.coords;
+                    map.setView([latitude, longitude], 14);
+                    L.marker([latitude, longitude]).addTo(map)
+                        .bindPopup('You are here')
+                        .openPopup();
+                }, () => {
+                    alert('Unable to retrieve your location');
+                });
+            }
+        });
     </script>
 {% endblock %}
