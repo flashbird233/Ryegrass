@@ -23,12 +23,11 @@
                 background-size: cover;
                 border: none;
                 padding: 0;
-                width: 40px;
-                height: 40px;
+                width: 30px;
+                height: 30px;
                 cursor: pointer;
                 color: transparent;
                 overflow: hidden;
-                margin-right: 10px;
                 background-color: white;
             }
         </style>
@@ -39,9 +38,14 @@
         <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
                 integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo="
                 crossorigin=""></script>
+
+        <!-- Leaflet-geosearch JavaScript -->
+        <script src="https://unpkg.com/leaflet-geosearch"></script>
+        <!-- Leaflet-geosearch CSS -->
+        <link rel="stylesheet" href="https://unpkg.com/leaflet-geosearch/dist/geosearch.css"/>
     </header>
     <body>
-    <h1 style="color: white; text-align: center; margin-top: 8%">Check the Ryegrass Location in VIC</h1>
+    <h1 style="color: white; text-align: center; margin-top: 7%">Check the Ryegrass Location in VIC</h1>
     <div id="map"></div>
     <button id="find-me">Find me</button>
     </body>
@@ -75,13 +79,38 @@
                     }).addTo(map);
 
                     // Add a popup to the circle
-                    circle.bindPopup(`<b>Vernacular Name:</b> ${location.rye_vernacular_name}
-                                    <br><b>Scientific Name:</b> ${location.rye_scientific_name}
-                                    <br><b>Data Source:</b> <a href="https://www.ala.org.au/" target="_blank">Atlas of Living Australia</a>`);
+                    circle.bindPopup(`<b>Vernacular Name:</b> ${location.rye_vernacular_name}`);
                 });
             });
+
+        // Add a location search bar on the top of the map
+        class LimitedOpenStreetMapProvider extends GeoSearch.OpenStreetMapProvider {
+            search({query}) {
+                // Call the original search function
+                return super.search({query})
+                    .then(results => {
+                        // Filter the results to only include those within Victoria
+                        return results.filter(result => {
+                            const {x: lon, y: lat} = result;
+                            // These are approximate boundaries for Victoria, adjust as needed
+                            const minLat = -39.2246, maxLat = -33.9811, minLon = 140.9617, maxLon = 149.9767;
+                            return lat >= minLat && lat <= maxLat && lon >= minLon && lon <= maxLon;
+                        });
+                    });
+            }
+        }
+
+        const provider = new LimitedOpenStreetMapProvider();
+        const searchControl = new GeoSearch.GeoSearchControl({
+            provider: provider,
+            searchLabel: 'Enter address here...',
+            zoomLevel: 10,
+            position: 'topright'
+        });
+        map.addControl(searchControl);
+
         // Add a button to find the user's location
-        const findMeControl = L.control({position: 'topright'});
+        const findMeControl = L.control({position: 'topleft'});
         findMeControl.onAdd = function (map) {
             const div = L.DomUtil.create('div', 'leaflet-bar leaflet-control leaflet-control-custom');
             div.appendChild(document.getElementById('find-me'));
