@@ -61,17 +61,6 @@ def home(request):
 
 
 def rye_map(request):
-    # # Only keep last 3 years data
-    # now = timezone.now()
-    # check_date = now - relativedelta(years=3)
-    # # The lat should between -33 and -40, lon should between 139 and 152
-    # ryegrass = Ryegrass.objects.filter(
-    #     Q(rye_date__gte=check_date) &
-    #     Q(rye_lat__gte=-40) &
-    #     Q(rye_lat__lte=-33) &
-    #     Q(rye_lon__gte=139) &
-    #     Q(rye_lon__lte=152)
-    # ).values('rye_lat', 'rye_lon', 'rye_vernacular_name')
     if request.session.get('is_logged_in'):
         return render(request, 'Map_Page.html')
     else:
