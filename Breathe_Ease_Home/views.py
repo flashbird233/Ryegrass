@@ -6,18 +6,17 @@ import requests
 from dateutil.relativedelta import relativedelta
 from django.db.models import Q
 from django.http import JsonResponse
-from django.shortcuts import render, redirect
 from django.template.loader import render_to_string
 from django.utils import timezone
 
 from Breathe_Ease_Home.models import Ryegrass, Symptom, SymptomStatistics, SymptomRecommends, Recommend
 from .forms import ExposureTimeForm, SymptomForm
 
+
 # import logging
 #
 # logger = logging.getLogger(__name__)
-#login function
-from django.contrib.auth.decorators import login_required
+# login function
 
 
 # def login_view(request):
@@ -38,12 +37,13 @@ from django.contrib.auth.decorators import login_required
 def login_view(request):
     if request.method == 'POST':
         password = request.POST.get('password', '')
-        if password == 'abc':  # 这是你的硬编码密码
+        if password == 'Qwertyui!@#':  # 这是你的硬编码密码
             request.session['is_logged_in'] = True
             return redirect('home')  # 确保你有一个名为'homepage'的URL名称
         else:
             return render(request, 'login.html', {'error_message': 'Invalid password. Please try again.'})
     return render(request, 'login.html')
+
 
 # @login_required
 def home(request):
@@ -54,11 +54,11 @@ def home(request):
         # print('bbbbbbbbbbbbb')
         return redirect('login')
 
-
     # if request.session.get('is_logged_in'):
     #     return render(request, 'Map_Page.html')
     # else:
     #     return redirect('login')
+
 
 def rye_map(request):
     # # Only keep last 3 years data
@@ -98,8 +98,10 @@ def cloth_view(request):
     else:
         return redirect('login')
 
+
 def base(request):
     return render(request, 'base.html')
+
 
 # @login_required
 def allergy_hub(request):
@@ -117,6 +119,7 @@ def allergy_hub(request):
         })
     else:
         return redirect('login')
+
 
 # @login_required
 def update_ryegrass(request):
@@ -160,6 +163,7 @@ def update_ryegrass(request):
     return render(request, 'Update_RyeDB.html', {'ryegrass': ryegrass})
     # return render(request, 'Update_RyeDB.html')
 
+
 # @login_required
 def generate_suggestions(duration):
     try:
@@ -180,6 +184,7 @@ def generate_suggestions(duration):
         return (
             "Advise using an N95 mask, sunglasses, long sleeves, trousers, gloves, and a hat with a substantial brim. After leaving the allergen area, take a shower and change clothes immediately. For clothing material, medical-grade protective garments are preferred.")
 
+
 # def suggest_clothing(request):
 #     if request.method == 'POST':
 #         form = ExposureTimeForm(request.POST)
@@ -191,6 +196,7 @@ def generate_suggestions(duration):
 #
 #     return render(request, 'cloth_view.html', {'form': form})
 from django.shortcuts import render, redirect
+
 
 def cloth_edu(request):
     # 检查用户是否已经登录
@@ -227,6 +233,7 @@ def symptom_relief_form(request):
         symptoms = Symptom.objects.all()
         form = SymptomForm()
         return render(request, 'Allergy_Hub.html', {'form': form, 'symptoms': symptoms})
+
 
 # @login_required
 def symptom_stats_form(request):
@@ -287,6 +294,7 @@ def calculate_percentage():
         sampleRateData['data'].append(other_percentage)
 
     return sampleRateData
+
 
 # @login_required
 def generate_calendar_form(request):
