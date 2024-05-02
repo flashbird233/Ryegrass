@@ -18,20 +18,20 @@ from django.conf import settings
 from django.contrib import admin
 from django.urls import path, re_path
 from django.views.static import serve
-
+# from django.views import login
 import Breathe_Ease_Home.views
 
 urlpatterns = [
+    path('', Breathe_Ease_Home.views.login_view, name='login'),
     path('admin/', admin.site.urls),
-    path('', Breathe_Ease_Home.views.home),  # Default path
-    path('home/', Breathe_Ease_Home.views.home),
+    path('home/', Breathe_Ease_Home.views.home,name='home'),  # Default path
+    # path('home/', Breathe_Ease_Home.views.home,name='homepage'),
     path('map/', Breathe_Ease_Home.views.rye_map),
     re_path(r'static/(?P<path>.*)', serve, {"document_root": settings.STATIC_ROOT}, name="static"),
-    path('cloth_edu/', Breathe_Ease_Home.views.cloth_edu),
+    path('cloth_view/', Breathe_Ease_Home.views.cloth_view,name='cloth_view'),
     path('base/', Breathe_Ease_Home.views.base),
     path('update_ryedb', Breathe_Ease_Home.views.update_ryegrass, name='update_ryegrass'),
-    path('chat/', Breathe_Ease_Home.views.customer_support_chat, name='customer_support_chat'),
-    path('cloth_sug', Breathe_Ease_Home.views.suggest_clothing, name='suggest_clothing'),
+    path('cloth_edu/', Breathe_Ease_Home.views.cloth_edu, name='cloth_edu'),
     path('Allergy_Hub/', Breathe_Ease_Home.views.allergy_hub, name='allergy_hub'),
     path('Allergy_Hub/symptom_relief_form', Breathe_Ease_Home.views.symptom_relief_form, name='symptom_relief_form'),
     path('Allergy_Hub/symptom_stats_form', Breathe_Ease_Home.views.symptom_stats_form, name='symptom_stats_form'),
