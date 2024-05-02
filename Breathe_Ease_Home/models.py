@@ -82,3 +82,6 @@ class SymptomStatistics(models.Model):
 
     def __str__(self):
         return "{}, {}".format(self.symptom_id, self.symptom_count)
+
+class User(models.Model):
+    password = models.CharField(max_length=128)

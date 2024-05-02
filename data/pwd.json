@@ -1,0 +1,9 @@
+[
+    {
+        "model": "Breathe_Ease_Home.User",
+        "pk": 1,
+        "fields": {
+            "password": "abc"
+        }
+    }
+]

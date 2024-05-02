@@ -13,15 +13,52 @@ from django.utils import timezone
 from Breathe_Ease_Home.models import Ryegrass, Symptom, SymptomStatistics, SymptomRecommends, Recommend
 from .forms import ExposureTimeForm, SymptomForm
 
-
 # import logging
 #
 # logger = logging.getLogger(__name__)
+#login function
+from django.contrib.auth.decorators import login_required
 
 
+# def login_view(request):
+#     if request.method == 'POST':
+#         password = request.POST['password']
+#
+#         if password == 'abc':
+#             # 密码正确,执行登录操作
+#             request.session['is_logged_in'] = True
+#             return redirect('homepage')
+#             # return render(request, 'Breathe_Ease_Home.html')
+#         else:
+#             error_message = 'Invalid password. Please try again.'
+#             return render(request, 'login.html', {'error_message': error_message})
+#     else:
+#         return render(request, 'login.html')
+
+def login_view(request):
+    if request.method == 'POST':
+        password = request.POST.get('password', '')
+        if password == 'abc':  # 这是你的硬编码密码
+            request.session['is_logged_in'] = True
+            return redirect('home')  # 确保你有一个名为'homepage'的URL名称
+        else:
+            return render(request, 'login.html', {'error_message': 'Invalid password. Please try again.'})
+    return render(request, 'login.html')
+
+# @login_required
 def home(request):
-    return render(request, 'Breathe_Ease_Home.html')
+    if request.session.get('is_logged_in'):
+        # print('aaaaaaaaaaaaa')
+        return render(request, 'Breathe_Ease_Home.html')
+    else:
+        # print('bbbbbbbbbbbbb')
+        return redirect('login')
 
+
+    # if request.session.get('is_logged_in'):
+    #     return render(request, 'Map_Page.html')
+    # else:
+    #     return redirect('login')
 
 def rye_map(request):
     # # Only keep last 3 years data
@@ -35,10 +72,14 @@ def rye_map(request):
     #     Q(rye_lon__gte=139) &
     #     Q(rye_lon__lte=152)
     # ).values('rye_lat', 'rye_lon', 'rye_vernacular_name')
-    return render(request, 'Map_Page.html')
+    if request.session.get('is_logged_in'):
+        return render(request, 'Map_Page.html')
+    else:
+        return redirect('login')
 
 
 # Define a function to get the locations of ryegrass
+# @login_required
 def get_locations(request):
     # Only keep last 3 years data
     now = timezone.now()
@@ -50,22 +91,34 @@ def get_locations(request):
     return JsonResponse(list(ryegrass), safe=False)
 
 
-# Cloth Edu Page
-def cloth_edu(request):
-    return render(request, 'Cloth_Edu.html')
-
+def cloth_view(request):
+    if request.session.get('is_logged_in'):
+        # print(request.session.get('is_logged_in'))
+        return render(request, 'cloth_view.html')
+    else:
+        return redirect('login')
 
 def base(request):
     return render(request, 'base.html')
 
-
+# @login_required
 def allergy_hub(request):
-    symptoms = Symptom.objects.all()
-    sample_rate_data = calculate_percentage()
-    sample_rate_data_json = json.dumps(sample_rate_data)
-    return render(request, 'Allergy_Hub.html', {'symptoms': symptoms, 'sampleRateData': sample_rate_data_json})
+    # symptoms = Symptom.objects.all()
+    # sample_rate_data = calculate_percentage()
+    # sample_rate_data_json = json.dumps(sample_rate_data)
+    # return render(request, 'Allergy_Hub.html', {'symptoms': symptoms, 'sampleRateData': sample_rate_data_json})
+    if request.session.get('is_logged_in'):
+        symptoms = Symptom.objects.all()
+        sample_rate_data = calculate_percentage()
+        sample_rate_data_json = json.dumps(sample_rate_data)
+        return render(request, 'Allergy_Hub.html', {
+            'symptoms': symptoms,
+            'sampleRateData': sample_rate_data_json
+        })
+    else:
+        return redirect('login')
 
-
+# @login_required
 def update_ryegrass(request):
     ryegrass = Ryegrass.objects.all()
     response = requests.get(
@@ -107,7 +160,7 @@ def update_ryegrass(request):
     return render(request, 'Update_RyeDB.html', {'ryegrass': ryegrass})
     # return render(request, 'Update_RyeDB.html')
 
-
+# @login_required
 def generate_suggestions(duration):
     try:
         # Attempt to convert duration to an integer
@@ -127,23 +180,37 @@ def generate_suggestions(duration):
         return (
             "Advise using an N95 mask, sunglasses, long sleeves, trousers, gloves, and a hat with a substantial brim. After leaving the allergen area, take a shower and change clothes immediately. For clothing material, medical-grade protective garments are preferred.")
 
+# def suggest_clothing(request):
+#     if request.method == 'POST':
+#         form = ExposureTimeForm(request.POST)
+#         if form.is_valid():
+#             suggestions = generate_suggestions(form.cleaned_data['duration'])
+#             return render(request, 'cloth_view.html', {'suggestions': suggestions})
+#     else:
+#         form = ExposureTimeForm()
+#
+#     return render(request, 'cloth_view.html', {'form': form})
+from django.shortcuts import render, redirect
 
-def suggest_clothing(request):
+def cloth_edu(request):
+    # 检查用户是否已经登录
+    if not request.session.get('is_logged_in'):
+        return redirect('login')  # 如果用户未登录，则重定向到登录页面
+
     if request.method == 'POST':
         form = ExposureTimeForm(request.POST)
         if form.is_valid():
+            # 表单数据有效，生成建议
             suggestions = generate_suggestions(form.cleaned_data['duration'])
-            return render(request, 'Cloth_Sug.html', {'suggestions': suggestions})
+            return render(request, 'cloth_view.html', {'suggestions': suggestions})
     else:
+        # 不是POST请求，仅显示空表单
         form = ExposureTimeForm()
 
-    return render(request, 'Cloth_Sug.html', {'form': form})
+    return render(request, 'cloth_view.html', {'form': form})
 
 
-def customer_support_chat(request):
-    return render(request, 'chat.html')  # 'chat.html' is the interface
-
-
+# @login_required
 def symptom_relief_form(request):
     if request.method == 'POST':
         form = SymptomForm(request.POST)
@@ -161,7 +228,7 @@ def symptom_relief_form(request):
         form = SymptomForm()
         return render(request, 'Allergy_Hub.html', {'form': form, 'symptoms': symptoms})
 
-
+# @login_required
 def symptom_stats_form(request):
     if request.method == 'POST':
         form = SymptomForm(request.POST)
@@ -221,7 +288,7 @@ def calculate_percentage():
 
     return sampleRateData
 
-
+# @login_required
 def generate_calendar_form(request):
     if request.method == 'POST':
         form = request.POST.get('data')
@@ -297,4 +364,8 @@ def generate_calendar_form(request):
             'events': processed_data_list
         })
     else:
-        return redirect('Allergy_Hub.html')
+        # return redirect('Allergy_Hub.html')
+        if request.session.get('is_logged_in'):
+            return render(request, 'Allergy_Hub.html')
+        else:
+            return redirect('login')
