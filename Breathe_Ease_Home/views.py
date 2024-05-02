@@ -80,10 +80,10 @@ def get_locations(request):
     return JsonResponse(list(ryegrass), safe=False)
 
 
-def cloth_view(request):
+def cloth_edu(request):
     if request.session.get('is_logged_in'):
         # print(request.session.get('is_logged_in'))
-        return render(request, 'cloth_view.html')
+        return render(request, 'Cloth_Edu.html')
     else:
         return redirect('login')
 
@@ -187,7 +187,7 @@ def generate_suggestions(duration):
 from django.shortcuts import render, redirect
 
 
-def cloth_edu(request):
+def cloth_sug(request):
     # 检查用户是否已经登录
     if not request.session.get('is_logged_in'):
         return redirect('login')  # 如果用户未登录，则重定向到登录页面
