@@ -5,17 +5,10 @@
         <style>
             body {
                 height: 100vh;
-                background-image: linear-gradient(to bottom, rgba(0, 0, 0, 0.3) 0%, rgba(0, 0, 0, 0.7) 75%, #000 100%), url("{% static 'images/bg-masthead.jpg' %}");
-                background-size: cover;
+            {#background-image: linear-gradient(to bottom, rgba(0, 0, 0, 0.3) 0%, rgba(0, 0, 0, 0.7) 75%, #000 100%), url("{% static 'images/bg-masthead.jpg' %}");#} background-size: cover;
                 background-position: center;
                 background-repeat: no-repeat;
-            }
-
-            #map {
-                height: 75%;
-                width: 75%;
-                margin-right: auto;
-                margin-left: auto
+                background-color: #2F4F4F;
             }
 
             #find-me {
@@ -39,16 +32,54 @@
                 integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo="
                 crossorigin=""></script>
 
-        <!-- Leaflet-geosearch JavaScript -->
+        <!-- Leaflet-geosearch -->
         <script src="https://unpkg.com/leaflet-geosearch"></script>
-        <!-- Leaflet-geosearch CSS -->
         <link rel="stylesheet" href="https://unpkg.com/leaflet-geosearch/dist/geosearch.css"/>
+
+        <!-- Leaflet Control Geocoder -->
+        <link rel="stylesheet" href="https://unpkg.com/leaflet-control-geocoder/dist/Control.Geocoder.css"/>
+        <script src="https://unpkg.com/leaflet-control-geocoder/dist/Control.Geocoder.js"></script>
+
+        <!-- Leaflet-semicircle -->
+        <script src="https://unpkg.com/leaflet-semicircle"></script>
     </header>
+
+    <!-- Body -->
     <body>
-    <h1 style="color: white; text-align: center; margin-top: 7%">Check the Ryegrass Location in VIC</h1>
-    <div id="map"></div>
+    <!-- Add a title to the map -->
+    <h1 style="color: white; text-align: center; margin-top: 6%">Check the Ryegrass Location in VIC</h1>
+    <!-- Display the map -->
+    <div id="map-container"
+         style="display: flex; justify-content: flex-start; height: 80%; width: 85%; margin: auto">
+
+        <!-- Add the map -->
+        <div id="map"
+             style="height: 100%; width: 80%"></div>
+
+        <!-- Add the sidebar -->
+        <div id="sidebar"
+             style="height: 100%; width: 20%; float: left; border-left: 1px solid #ccc;
+                background-color: #ffffcc;">
+            <div id="sidebar-title"
+                 style="display: flex; height: 50px;
+                         text-align: center; justify-content: center;
+                         background-image: url('{% static 'images/MapSiderTitle3.png' %}');
+                         background-size: cover">
+            </div>
+
+            <!-- Add the input field for the search bar -->
+            <input id="start-input" type="text" placeholder="Enter address here..."
+                   style="width: 90%; margin: 10px auto">
+            <button id="start-search">Search</button>
+            <input id="destination-input" type="text" placeholder="Enter destination here..."
+                   style="width: 90%; margin: 10px auto">
+        </div>
+    </div>
+    <!-- Add a button to find the user's location -->
     <button id="find-me">Find me</button>
     </body>
+
+    <!-- JavaScript -->
     <script>
         // Add a boundary to the map
         const southWest = L.latLng(-38.433859, 140.961682),
@@ -80,6 +111,16 @@
 
                     // Add a popup to the circle
                     circle.bindPopup(`<b>Vernacular Name:</b> ${location.rye_vernacular_name}`);
+
+                    // Add a semi-circle to the map
+                    let semiCircle = L.semiCircle([location.rye_lat, location.rye_lon], {
+                        radius: 500,
+                        startAngle: 0,
+                        stopAngle: 180,
+                        color: 'blue',
+                        fillColor: '#00f',
+                        fillOpacity: 0.5
+                    }).addTo(map);
                 });
             });
 
@@ -100,6 +141,7 @@
             }
         }
 
+        // Create the search control
         const provider = new LimitedOpenStreetMapProvider();
         const searchControl = new GeoSearch.GeoSearchControl({
             provider: provider,
@@ -108,6 +150,44 @@
             position: 'topright'
         });
         map.addControl(searchControl);
+
+        //Sidebar location search
+        // 创建地理编码控件
+        var geocoder = L.Control.geocoder({
+            defaultMarkGeocode: false
+        })
+            .on('markgeocode', function (e) {
+                var bbox = e.geocode.bbox;
+                var poly = L.polygon([
+                    bbox.getSouthEast(),
+                    bbox.getNorthEast(),
+                    bbox.getNorthWest(),
+                    bbox.getSouthWest()
+                ]);
+                map.fitBounds(poly.getBounds());
+            })
+            .addTo(map);
+
+        // 添加一个函数来处理地理编码结果
+        function geocodeResult(result) {
+            // 从结果中获取纬度和经度
+            var lat = result.center.lat;
+            var lon = result.center.lng;
+
+            // 创建一个新的标记并添加到地图上
+            var marker = L.marker([lat, lon]).addTo(map);
+
+            // 可选：添加一个弹出窗口到标记
+            marker.bindPopup("Location found: " + result.name).openPopup();
+        }
+
+        // 在侧边栏中添加输入框和按钮
+        var addressInput = document.getElementById('start-input');
+        var searchButton = document.getElementById('start-search');
+
+        searchButton.addEventListener('click', function () {
+            geocoder.geocode(addressInput.value, geocodeResult);
+        });
 
         // Add a button to find the user's location
         const findMeControl = L.control({position: 'topleft'});
