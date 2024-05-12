@@ -1,6 +1,6 @@
 import json
 from datetime import datetime, timedelta
-
+from django.shortcuts import render, redirect
 import pandas as pd
 import requests
 from dateutil.relativedelta import relativedelta
@@ -13,27 +13,6 @@ from Breathe_Ease_Home.models import Ryegrass, Symptom, SymptomStatistics, Sympt
 from .forms import ExposureTimeForm, SymptomForm
 
 
-# import logging
-#
-# logger = logging.getLogger(__name__)
-# login function
-
-
-# def login_view(request):
-#     if request.method == 'POST':
-#         password = request.POST['password']
-#
-#         if password == 'abc':
-#             # 密码正确,执行登录操作
-#             request.session['is_logged_in'] = True
-#             return redirect('homepage')
-#             # return render(request, 'Breathe_Ease_Home.html')
-#         else:
-#             error_message = 'Invalid password. Please try again.'
-#             return render(request, 'login.html', {'error_message': error_message})
-#     else:
-#         return render(request, 'login.html')
-
 def login_view(request):
     if request.method == 'POST':
         password = request.POST.get('password', '')
@@ -45,7 +24,7 @@ def login_view(request):
     return render(request, 'login.html')
 
 
-# @login_required
+
 def home(request):
     if request.session.get('is_logged_in'):
         # print('aaaaaaaaaaaaa')
@@ -68,7 +47,6 @@ def rye_map(request):
 
 
 # Define a function to get the locations of ryegrass
-# @login_required
 def get_locations(request):
     # Only keep last 3 years data
     now = timezone.now()
@@ -92,7 +70,6 @@ def base(request):
     return render(request, 'base.html')
 
 
-# @login_required
 def allergy_hub(request):
     # symptoms = Symptom.objects.all()
     # sample_rate_data = calculate_percentage()
@@ -110,7 +87,6 @@ def allergy_hub(request):
         return redirect('login')
 
 
-# @login_required
 def update_ryegrass(request):
     ryegrass = Ryegrass.objects.all()
     response = requests.get(
@@ -153,7 +129,6 @@ def update_ryegrass(request):
     # return render(request, 'Update_RyeDB.html')
 
 
-# @login_required
 def generate_suggestions(duration):
     try:
         # Attempt to convert duration to an integer
@@ -174,38 +149,25 @@ def generate_suggestions(duration):
             "Advise using an N95 mask, sunglasses, long sleeves, trousers, gloves, and a hat with a substantial brim. After leaving the allergen area, take a shower and change clothes immediately. For clothing material, medical-grade protective garments are preferred.")
 
 
-# def suggest_clothing(request):
-#     if request.method == 'POST':
-#         form = ExposureTimeForm(request.POST)
-#         if form.is_valid():
-#             suggestions = generate_suggestions(form.cleaned_data['duration'])
-#             return render(request, 'cloth_view.html', {'suggestions': suggestions})
-#     else:
-#         form = ExposureTimeForm()
-#
-#     return render(request, 'cloth_view.html', {'form': form})
-from django.shortcuts import render, redirect
-
-
 def cloth_sug(request):
-    # 检查用户是否已经登录
+    # Check if the user is already logged in
     if not request.session.get('is_logged_in'):
-        return redirect('login')  # 如果用户未登录，则重定向到登录页面
+        return redirect('login')  # If user is not logged in, redirect to login page
 
     if request.method == 'POST':
         form = ExposureTimeForm(request.POST)
         if form.is_valid():
-            # 表单数据有效，生成建议
+            # The form data is valid and suggestions are generated
             suggestions = generate_suggestions(form.cleaned_data['duration'])
             return render(request, 'cloth_view.html', {'suggestions': suggestions})
     else:
-        # 不是POST请求，仅显示空表单
+        # Not a POST request, just showing an empty form
         form = ExposureTimeForm()
 
     return render(request, 'cloth_view.html', {'form': form})
 
 
-# @login_required
+
 def symptom_relief_form(request):
     if request.method == 'POST':
         form = SymptomForm(request.POST)
@@ -224,7 +186,6 @@ def symptom_relief_form(request):
         return render(request, 'Allergy_Hub.html', {'form': form, 'symptoms': symptoms})
 
 
-# @login_required
 def symptom_stats_form(request):
     if request.method == 'POST':
         form = SymptomForm(request.POST)
@@ -285,7 +246,6 @@ def calculate_percentage():
     return sampleRateData
 
 
-# @login_required
 def generate_calendar_form(request):
     if request.method == 'POST':
         form = request.POST.get('data')
