@@ -1,142 +1,55 @@
 {% extends 'base.html' %}
 {% load static %}
 {% block content %}
-    <header class="masthead">
-        <div class="container px-4 px-lg-5 d-flex h-100 align-items-center justify-content-center">
-            <div class="d-flex justify-content-center">
-                <div class="text-center">
-                    <h3 class="text-white ">Do you live in Melbourne and have allergy to Ryegrass?</h3>
-                    <h3 class="text-white mx-auto mt-2 mb-5" style="text-align: center;">You are at the right point to get the solutions</h3>
-                </div>
+<header class="masthead">
+    <div class="container px-4 px-lg-5 d-flex h-100 align-items-center justify-content-center">
+        <div class="d-flex justify-content-center">
+            <div class="text-center">
+                <h1 style="color: rgba(255, 255, 255, 1); font-weight: bold;">Ryegrass Allergy Solutions in Victoria</h1>
             </div>
         </div>
-<!--Start of Tawk.to Script-->
-<script type="text/javascript">
-var Tawk_API=Tawk_API||{}, Tawk_LoadStart=new Date();
-(function(){
-var s1=document.createElement("script"),s0=document.getElementsByTagName("script")[0];
-s1.async=true;
-s1.src='https://embed.tawk.to/6634614d1ec1082f04ea5d7f/1hsu9o6a8';
-s1.charset='UTF-8';
-s1.setAttribute('crossorigin','*');
-s0.parentNode.insertBefore(s1,s0);
-})();
-</script>
-<!--End of Tawk.to Script-->
-    </header>
-    <!-- Projects-->
-<section style="background-color: #2F4F4F; padding: 40px;">
-  <style>
-    .image-container {
-      overflow: hidden;
-    }
-
-    .image-container img {
-      transition: transform 0.3s ease;
-    }
-
-    .image-container:hover img {
-      transform: scale(1.1);
-    }
-
-    .card {
-      background-color: #f0f0f0;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      padding: 30px;
-    }
-
-    .card p {
-      text-align: center;
-      margin-bottom: 20px;
-    }
-
-    .card .button {
-      display: inline-block;
-      background-color: #2F4F4F;
-      color: white;
-      padding: 10px 20px;
-      text-align: center;
-      text-decoration: none;
-      font-size: 16px;
-      border: none;
-      cursor: pointer;
-    }
-  </style>
-
-  <div style="display: flex; flex-direction: column;">
-    <div style="display: flex; align-items: stretch;">
-      <div style="flex: 0 0 40px;"></div>
-      <div class="image-container" style="width: 70%;">
-        <img src="{% static 'images/ho-img2.png' %}" style="width: 100%; height: auto;">
-      </div>
-      <div style="flex: 0 0 40px;"></div>
-      <div class="card" style="width: 30%;">
-        <p>
-          <span style="font-size: 24px;">Experience entering Pollen Zone Mistakenly?</span><br>
-          <span style="font-size: 16px;">Get Ryegrass Distribution Data</span>
-        </p>
-        <a href="/map" class="button">Enter Now</a>
-      </div>
-      <div style="flex: 0 0 40px;"></div>
     </div>
+</header>
 
-    <div style="display: flex; align-items: stretch; margin-top: 40px;">
-      <div style="flex: 0 0 40px;"></div>
-      <div class="image-container" style="width: 70%;">
-        <img src="{% static 'images/ho-img1.jpg' %}" style="width: 100%; height: auto;">
-      </div>
-      <div style="flex: 0 0 40px;"></div>
-      <div class="card" style="width: 30%;">
-        <p>
-          <span style="font-size: 24px;">Always Forgot to Take Medicine On-time?</span><br>
-          <span style="font-size: 16px;">Reach out our medication calender!!!</span>
-        </p>
-        <a href="/Allergy_Hub" class="button">Enter Now</a>
-      </div>
-      <div style="flex: 0 0 40px;"></div>
+
+<!-- Section for the Pollen Map Card -->
+<section style="padding: 40px; background-color: #f0f0f0;">
+    <div class="container">
+        <div class="card" style="margin: 10px; display: flex; flex-direction: column; align-items: center;">
+            <img src="{% static 'images/ho-img2.png' %}" alt="Pollen Zones" style="width: 100%; max-width: 1200px; height: auto;">
+            <div class="card-body" style="text-align: center;">
+                <h3>Experience entering Pollen Zone Mistakenly?</h3>
+                <p>Get Ryegrass Distribution Data.</p>
+                <a href="/map" class="button" style="background-color: #007BFF; color: white; padding: 10px 20px; text-decoration: none; border-radius: 5px;">Plan Your Route</a>
+            </div>
+        </div>
     </div>
-  </div>
 </section>
-    <!-- Signup-->
-    <section class="signup-section" id="signup">
-        <div class="container px-4 px-lg-5">
-            <div class="row gx-4 gx-lg-5">
-                <div class="col-md-10 col-lg-8 mx-auto text-center">
-                    <i class="far fa-paper-plane fa-2x mb-2 text-white"></i>
-                    <h2 class="text-white mb-5">About Us</h2>
 
-                    <div class="about-content text-white mb-4" style="text-align: justify;" style="font-size: 1.5rem;">
-                        <p>We are a team enthusiastic about creating solutions for ryegrass allergy. We aimed to make a better life for those affected by seasonal allergies in Melbourne. We'd love for you to join us and provide us ideas to have a better experience.
-                        Together, we can make outdoor fun possible for everyone, without worrying about allergies.</p>
-                    </div>
-                    <form class="form-signup" id="contactForm" data-sb-form-api-token="API_TOKEN">
-                        <div class="invalid-feedback mt-2" data-sb-feedback="emailAddress:required">An email is
-                            required.
-                        </div>
-                        <div class="invalid-feedback mt-2" data-sb-feedback="emailAddress:email">Email is not valid.
-                        </div>
-                        <div class="d-none" id="submitSuccessMessage">
-                            <div class="text-center mb-3 mt-2 text-white">
-                                <div class="fw-bolder">Form submission successful!</div>
-                                To activate this form, sign up at
-                                <br/>
-                                <!--a href="https://startbootstrap.com/solution/contact-forms">
-                                https://startbootstrap.com/solution/contact-forms</a-->
-                            </div>
-                        </div>
-                        <!-- Submit error message-->
-                        <!---->
-                        <!-- This is what your users will see when there is-->
-                        <!-- an error submitting the form-->
-                        <div class="d-none" id="submitErrorMessage">
-                            <div class="text-center text-danger mb-3 mt-2">Error sending message!</div>
-                        </div>
-                    </form>
-                </div>
+<!-- Section for the Medication Reminder Card -->
+<section style="padding: 40px; background-color: #f0f0f0;">
+    <div class="container">
+        <div class="card" style="margin: 10px; display: flex; flex-direction: column; align-items: center;">
+            <img src="{% static 'images/ho-img1.jpg' %}" alt="Medication Reminder" style="width: 100%; max-width: 1200px; height: auto;">
+            <div class="card-body" style="text-align: center;">
+                <h3>Always Forgot to Take Medicine On-time?</h3>
+                <p>Reach out our medication calendar!!!</p>
+                <a href="/map" class="button" style="background-color: #007BFF; color: white; padding: 10px 20px; text-decoration: none; border-radius: 5px;">Add To Your Calender</a>
             </div>
         </div>
-    </section>
+    </div>
+</section>
+
+<!-- About Us Section -->
+<section class="signup-section" id="signup" style="background-color: #2F4F4F; padding: 40px;">
+    <div class="container">
+        <div class="row gx-4 gx-lg-5">
+            <div class="col-md-10 col-lg-8 mx-auto text-center">
+                <h2 class="text-white mb-5">About Us</h2>
+                <p class="text-white mb-4" style="font-size: 1.5rem;">We're a passionate team dedicated to improving the lives of those affected by ryegrass allergies in Victoria. Join us in our mission to make outdoor activities enjoyable for everyone, free from the worry of seasonal allergies. Together, we can enhance outdoor experiences.</p>
+<!--                <a href="/contact" class="button" style="background-color: #007BFF; color: white; padding: 10px 20px; font-size: 1.1rem; border-radius: 5px; text-decoration: none;">Contact Us</a>-->
+            </div>
+        </div>
+    </div>
+</section>
 {% endblock %}
