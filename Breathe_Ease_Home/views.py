@@ -65,6 +65,24 @@ def get_weather_cur():
             'weather': response["current"]['weather'][0]['main']}
 
 
+def get_weather_cur():
+    # Melbourne coordinates
+    lat = -37.813611
+    lon = 144.963056
+    # API key and URL
+    key = "d32542473437f300dfdec104552b7f65"
+    main_url = "https://api.openweathermap.org/data/3.0/onecall?"
+    req_url = main_url + "lat=" + str(lat) + "&lon=" + str(lon) + "&appid=" + key
+    # Get the response
+    response = requests.get(req_url).json()
+    # Filter the response and return the required data
+    return {"temp": response["current"]['temp'],  # Kelvin
+            "humidity": response["current"]['humidity'],
+            'wind_speed': response["current"]['wind_speed'],  # m/s
+            'wind_deg': response["current"]['wind_deg'],  # degrees
+            'weather': response["current"]['weather'][0]['main']}
+
+
 # Define a function to get the locations of ryegrass
 def get_locations(request):
     # Only keep last 3 years data
