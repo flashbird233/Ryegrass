@@ -1,5 +1,6 @@
 import json
 from datetime import datetime, timedelta
+from math import sqrt
 
 import pandas as pd
 import requests
@@ -9,6 +10,8 @@ from django.http import JsonResponse
 from django.shortcuts import render, redirect
 from django.template.loader import render_to_string
 from django.utils import timezone
+from geopy import Point
+from geopy.distance import distance
 
 from Breathe_Ease_Home.models import Ryegrass, Symptom, SymptomStatistics, SymptomRecommends, Recommend
 from .forms import ExposureTimeForm, SymptomForm
@@ -57,6 +60,8 @@ def get_weather_cur():
     req_url = main_url + "lat=" + str(lat) + "&lon=" + str(lon) + "&appid=" + key
     # Get the response
     response = requests.get(req_url).json()
+    # Get current month
+    current_month = timezone.now().month
     # Filter the response and return the required data
     return {"temp": response["current"]['temp'],  # Kelvin
             "humidity": response["current"]['humidity'],
@@ -65,34 +70,67 @@ def get_weather_cur():
             'weather': response["current"]['weather'][0]['main']}
 
 
-def get_weather_cur():
-    # Melbourne coordinates
-    lat = -37.813611
-    lon = 144.963056
-    # API key and URL
-    key = "d32542473437f300dfdec104552b7f65"
-    main_url = "https://api.openweathermap.org/data/3.0/onecall?"
-    req_url = main_url + "lat=" + str(lat) + "&lon=" + str(lon) + "&appid=" + key
-    # Get the response
-    response = requests.get(req_url).json()
-    # Filter the response and return the required data
-    return {"temp": response["current"]['temp'],  # Kelvin
-            "humidity": response["current"]['humidity'],
-            'wind_speed': response["current"]['wind_speed'],  # m/s
-            'wind_deg': response["current"]['wind_deg'],  # degrees
-            'weather': response["current"]['weather'][0]['main']}
+# Calculate the points lat and long by distance and degree
+def cal_point(lat, lon, length, degree):
+    start_point = Point(lat, lon)
+    des_point = distance(kilometers=length).destination(point=start_point, bearing=degree)
+    return [des_point.latitude, des_point.longitude]
 
 
-# Define a function to get the locations of ryegrass
 def get_locations(request):
-    # Only keep last 3 years data
+    # Get the current weather information
+    weather_info = get_weather_cur()
+    # Get the ryegrass locations data
     now = timezone.now()
     check_date = now - relativedelta(years=3)
     ryegrass = Ryegrass.objects.filter(
         Q(rye_date__gte=check_date)
     ).values()
-
-    return JsonResponse(list(ryegrass), safe=False)
+    ryegrass = list(ryegrass)
+    # Get the shape points of the risk areas
+    results = []
+    for data in ryegrass:
+        # Get the center of the risk area
+        center_lat = data['rye_lat']
+        center_lon = data['rye_lon']
+        # Get the wind_deg
+        wind_deg = weather_info['wind_deg']
+        # Sign the value of radius and extend_length
+        radius = 0.5  # km the radius of the risk area
+        extend_length = 1.5  # km the length of the wind direction
+        # Calculate the shape points
+        shape_points = ['M', cal_point(center_lat, center_lon, radius, wind_deg - 90),
+                        'Q', cal_point(center_lat, center_lon, radius * sqrt(2), wind_deg - 135),
+                        cal_point(center_lat, center_lon, radius, wind_deg - 180),
+                        'T', cal_point(center_lat, center_lon, radius, wind_deg - 270),
+                        'L', cal_point(center_lat, center_lon, extend_length, wind_deg),
+                        'Z']
+        # Get the current month and current weather
+        weather = weather_info['weather']
+        month = now.month
+        pollen_months = [9, 10, 11, 12, 1, 2]
+        # Get the shape color
+        if month in pollen_months:
+            if weather == 'Rain':
+                shape_color = 'yellow'
+                popup_message = 'The risk of Ryegrass pollen become lower due to the rain.'
+            else:
+                shape_color = 'red'
+                popup_message = 'The risk of Ryegrass pollen is high.'
+        else:
+            shape_color = 'green'
+            popup_message = 'The risk of Ryegrass pollen is low, feel free to go outside.'
+        # Generate the result
+        result = {'month': month,
+                  'shape_points': shape_points,
+                  'weather': weather,
+                  'shape_color': shape_color,
+                  'popup_message': popup_message,
+                  'rye_name': data['rye_vernacular_name']}
+        # Append the result to the results
+        results.append(result)
+    # Return the results
+    return JsonResponse(results, safe=False)
 
 
 def cloth_edu(request):

@@ -25,6 +25,7 @@
             }
         </style>
 
+        <!-- Leaflet -->
         <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
               integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="
               crossorigin=""/>
@@ -40,8 +41,10 @@
         <link rel="stylesheet" href="https://unpkg.com/leaflet-control-geocoder/dist/Control.Geocoder.css"/>
         <script src="https://unpkg.com/leaflet-control-geocoder/dist/Control.Geocoder.js"></script>
 
-        <!-- Leaflet-semicircle -->
-        <script src="https://unpkg.com/leaflet-semicircle"></script>
+        <!-- Leaflet.curve -->
+        <script src="https://unpkg.com/leaflet-curve"></script>
+
+        <!-- Leaflet openrouteservice -->
     </header>
 
     <!-- Body -->
@@ -66,13 +69,6 @@
                          background-image: url('{% static 'images/MapSiderTitle3.png' %}');
                          background-size: cover">
             </div>
-
-            <!-- Add the input field for the search bar -->
-            <input id="start-input" type="text" placeholder="Enter address here..."
-                   style="width: 90%; margin: 10px auto">
-            <button id="start-search">Search</button>
-            <input id="destination-input" type="text" placeholder="Enter destination here..."
-                   style="width: 90%; margin: 10px auto">
         </div>
     </div>
     <!-- Add a button to find the user's location -->
@@ -96,31 +92,22 @@
         L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
             attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
         }).addTo(map);
-        // Add markers of ryegrass locations to the map
+
+        // Generate the Ryegrass pollen risk region
         fetch('api/locations')
             .then(response => response.json())
             .then(locations => {
                 locations.forEach(location => {
-                    // Add circles to the map
-                    let circle = L.circle([location.rye_lat, location.rye_lon], {
-                        color: 'red',
-                        fillColor: '#f03',
-                        fillOpacity: 0.5,
-                        radius: 500
+                    // Add a curve to the map
+                    let curve = L.curve(location.shape_points, {
+                        color: location.shape_color,
+                        fill: true
                     }).addTo(map);
 
-                    // Add a popup to the circle
-                    circle.bindPopup(`<b>Vernacular Name:</b> ${location.rye_vernacular_name}`);
-
-                    // Add a semi-circle to the map
-                    let semiCircle = L.semiCircle([location.rye_lat, location.rye_lon], {
-                        radius: 500,
-                        startAngle: 0,
-                        stopAngle: 180,
-                        color: 'blue',
-                        fillColor: '#00f',
-                        fillOpacity: 0.5
-                    }).addTo(map);
+                    // Add a popup to the risk region
+                    curve.bindPopup(location.rye_name + '<br>' +
+                        location.popup_message
+                    );
                 });
             });
 
@@ -151,43 +138,8 @@
         });
         map.addControl(searchControl);
 
-        //Sidebar location search
-        // 创建地理编码控件
-        var geocoder = L.Control.geocoder({
-            defaultMarkGeocode: false
-        })
-            .on('markgeocode', function (e) {
-                var bbox = e.geocode.bbox;
-                var poly = L.polygon([
-                    bbox.getSouthEast(),
-                    bbox.getNorthEast(),
-                    bbox.getNorthWest(),
-                    bbox.getSouthWest()
-                ]);
-                map.fitBounds(poly.getBounds());
-            })
-            .addTo(map);
+        // Add the route suggestion by OpenRouteService
 
-        // 添加一个函数来处理地理编码结果
-        function geocodeResult(result) {
-            // 从结果中获取纬度和经度
-            var lat = result.center.lat;
-            var lon = result.center.lng;
-
-            // 创建一个新的标记并添加到地图上
-            var marker = L.marker([lat, lon]).addTo(map);
-
-            // 可选：添加一个弹出窗口到标记
-            marker.bindPopup("Location found: " + result.name).openPopup();
-        }
-
-        // 在侧边栏中添加输入框和按钮
-        var addressInput = document.getElementById('start-input');
-        var searchButton = document.getElementById('start-search');
-
-        searchButton.addEventListener('click', function () {
-            geocoder.geocode(addressInput.value, geocodeResult);
-        });
 
         // Add a button to find the user's location
         const findMeControl = L.control({position: 'topleft'});
