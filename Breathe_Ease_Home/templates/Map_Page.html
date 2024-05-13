@@ -44,7 +44,13 @@
         <!-- Leaflet.curve -->
         <script src="https://unpkg.com/leaflet-curve"></script>
 
-        <!-- Leaflet openrouteservice -->
+        <!-- Leaflet Routing Machine -->
+        <link rel="stylesheet"
+              href="https://unpkg.com/leaflet-routing-machine@latest/dist/leaflet-routing-machine.css"/>
+        <script src="https://unpkg.com/leaflet-routing-machine@latest/dist/leaflet-routing-machine.js"></script>
+        <script src="https://unpkg.com/leaflet-control-geocoder@1.13.0/dist/Control.Geocoder.js"></script>
+
+        <!-- Leaflet Routing Machine OpenRouteService -->
     </header>
 
     <!-- Body -->
@@ -58,6 +64,12 @@
         <!-- Add the map -->
         <div id="map"
              style="height: 100%; width: 80%"></div>
+
+        {#        <select id="travel-mode">#}
+        {#            <option value="driving">Driving</option>#}
+        {#            <option value="cycling">Cycling</option>#}
+        {#            <option value="walking">Walking</option>#}
+        {#        </select>#}
 
         <!-- Add the sidebar -->
         <div id="sidebar"
@@ -128,18 +140,50 @@
             }
         }
 
-        // Create the search control
-        const provider = new LimitedOpenStreetMapProvider();
-        const searchControl = new GeoSearch.GeoSearchControl({
-            provider: provider,
-            searchLabel: 'Enter address here...',
-            zoomLevel: 10,
-            position: 'topright'
-        });
-        map.addControl(searchControl);
-
         // Add the route suggestion by OpenRouteService
+        fetch('api/danger_areas')
+            .then(response => response.json())
+            .then(danger_areas => {
+                // Create the danger zones
+                const dangerZones = danger_areas.map(danger_area => ({
+                    polygon: L.polygon(danger_area.danger_area),
+                    riskLevel: danger_area.risk
+                }));
 
+                const customRouter = L.Routing.osrmv1({
+                    serviceUrl: 'https://router.project-osrm.org/route/v1'
+                });
+
+                // Rewrite the route function to avoid danger zones
+                customRouter.route = function (waypoints, callback, context, options) {
+                    const originalWaypoints = waypoints.map(wp => wp.latLng);
+
+                    // Check if the route intersects with any danger zones
+                    const filteredWaypoints = originalWaypoints.filter(latLng => {
+                        return !dangerZones.some(zone => zone.riskLevel === 'high' && zone.polygon.getBounds().contains(latLng));
+                    });
+
+                    if (filteredWaypoints.length < 2) {
+                        callback.call(context || callback, null, []);
+                        return;
+                    }
+
+                    L.Routing.OSRMv1.prototype.route.call(this, waypoints, callback, context, options);
+                };
+
+                // Add the route control
+                const routeControl = L.Routing.control({
+                    waypoints: [
+                        L.latLng(-37.813611, 144.963056),
+                        L.latLng(-37.813611, 144.963056)
+                    ],
+                    routeWhileDragging: true,
+                    geocoder: L.Control.Geocoder.nominatim(),
+                    router: customRouter // 使用自定义路由器
+                }).addTo(map);
+            }).catch(error => {
+            console.error('Error fetching danger zones:', error);
+        });
 
         // Add a button to find the user's location
         const findMeControl = L.control({position: 'topleft'});

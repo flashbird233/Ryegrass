@@ -1,8 +1,8 @@
 # Remove the records of ryegrass from the database
 import os
+from math import sqrt
 
 import django
-from django.http import JsonResponse
 
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'Ryegrass.settings')
 django.setup()
@@ -45,7 +45,8 @@ def cal_point(lat, lon, length, degree):
 
 
 # Get the shape points of risk areas
-def get_locations(weather_info):
+def get_danger_areas():
+    weather_info = get_weather_cur()
     # Get the ryegrass locations data
     now = timezone.now()
     check_date = now - relativedelta(years=3)
@@ -65,12 +66,12 @@ def get_locations(weather_info):
         radius = 0.5  # km the radius of the risk area
         extend_length = 1.5  # km the length of the wind direction
         # Calculate the shape points
-        shape_points = ['M', cal_point(center_lat, center_lon, radius, wind_deg - 90),
-                        'Q', cal_point(center_lat, center_lon, radius, wind_deg - 135),
-                        cal_point(center_lat, center_lon, radius, wind_deg - 180),
-                        'T', cal_point(center_lat, center_lon, radius, wind_deg - 270),
-                        'L', cal_point(center_lat, center_lon, extend_length, wind_deg),
-                        'Z']
+        danger_area = [cal_point(center_lat, center_lon, radius, wind_deg - 90),
+                       cal_point(center_lat, center_lon, radius * sqrt(2), wind_deg - 135),
+                       cal_point(center_lat, center_lon, radius, wind_deg - 180),
+                       cal_point(center_lat, center_lon, radius * sqrt(2), wind_deg - 225),
+                       cal_point(center_lat, center_lon, radius, wind_deg - 270),
+                       cal_point(center_lat, center_lon, extend_length, wind_deg)]
         # Get the current month and current weather
         weather = weather_info['weather']
         month = now.month
@@ -84,35 +85,12 @@ def get_locations(weather_info):
         else:
             color = 'green'
         # Generate the result
-        result = {'month': month,
-                  'shape_points': shape_points,
-                  'weather': weather,
-                  'color': color}
+        result = {'danger_area': danger_area}
         # Append the result to the results
         results.append(result)
     # Return the results
+    print(results)
     return results
 
 
-def get_locations2(request):
-    # Only keep last 3 years data
-    now = timezone.now()
-    check_date = now - relativedelta(years=3)
-    ryegrass = Ryegrass.objects.filter(
-        Q(rye_date__gte=check_date)
-    ).values()
-
-    return JsonResponse(list(ryegrass), safe=False)
-
-
-def test_get_locations2():
-    from django.test import RequestFactory
-    request = RequestFactory().get('/')
-    response = get_locations2(request)
-    print(response.content)
-
-
-a = get_locations(get_weather_cur())
-print(a)
-b = test_get_locations2()
-print(b)
+get_danger_areas()

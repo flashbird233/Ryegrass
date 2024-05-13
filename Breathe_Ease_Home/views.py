@@ -133,6 +133,54 @@ def get_locations(request):
     return JsonResponse(results, safe=False)
 
 
+def get_danger_areas(request):
+    weather_info = get_weather_cur()
+    # Get the ryegrass locations data
+    now = timezone.now()
+    check_date = now - relativedelta(years=3)
+    ryegrass = Ryegrass.objects.filter(
+        Q(rye_date__gte=check_date)
+    ).values()
+    ryegrass = list(ryegrass)
+    # Get the shape points of the risk areas
+    results = []
+    for data in ryegrass:
+        # Get the center of the risk area
+        center_lat = data['rye_lat']
+        center_lon = data['rye_lon']
+        # Get the wind_deg
+        wind_deg = weather_info['wind_deg']
+        # Sign the value of radius and extend_length
+        radius = 0.5  # km the radius of the risk area
+        extend_length = 1.5  # km the length of the wind direction
+        # Calculate the shape points
+        danger_area = [cal_point(center_lat, center_lon, radius, wind_deg - 90),
+                       cal_point(center_lat, center_lon, radius * sqrt(2), wind_deg - 135),
+                       cal_point(center_lat, center_lon, radius, wind_deg - 180),
+                       cal_point(center_lat, center_lon, radius * sqrt(2), wind_deg - 225),
+                       cal_point(center_lat, center_lon, radius, wind_deg - 270),
+                       cal_point(center_lat, center_lon, extend_length, wind_deg)]
+        # Get the current month and current weather
+        weather = weather_info['weather']
+        month = now.month
+        pollen_months = [9, 10, 11, 12, 1, 2]
+        # Get the shape color
+        if month in pollen_months:
+            if weather == 'Rain':
+                risk = 'mid'  # yellow
+            else:
+                risk = 'high'
+        else:
+            risk = 'low'
+        # Generate the result
+        result = {'danger_area': danger_area,
+                  'risk': risk}
+        # Append the result to the results
+        results.append(result)
+    # Return the results
+    return JsonResponse(results, safe=False)
+
+
 def cloth_edu(request):
     if request.session.get('is_logged_in'):
         # print(request.session.get('is_logged_in'))
