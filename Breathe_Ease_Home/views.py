@@ -1,11 +1,12 @@
 import json
 from datetime import datetime, timedelta
-from django.shortcuts import render, redirect
+
 import pandas as pd
 import requests
 from dateutil.relativedelta import relativedelta
 from django.db.models import Q
 from django.http import JsonResponse
+from django.shortcuts import render, redirect
 from django.template.loader import render_to_string
 from django.utils import timezone
 
@@ -22,7 +23,6 @@ def login_view(request):
         else:
             return render(request, 'login.html', {'error_message': 'Invalid password. Please try again.'})
     return render(request, 'login.html')
-
 
 
 def home(request):
@@ -46,15 +46,34 @@ def rye_map(request):
         return redirect('login')
 
 
+# Get the current weather of Mel by using the OpenWeatherMap API
+def get_weather_cur():
+    # Melbourne coordinates
+    lat = -37.813611
+    lon = 144.963056
+    # API key and URL
+    key = "d32542473437f300dfdec104552b7f65"
+    main_url = "https://api.openweathermap.org/data/3.0/onecall?"
+    req_url = main_url + "lat=" + str(lat) + "&lon=" + str(lon) + "&appid=" + key
+    # Get the response
+    response = requests.get(req_url).json()
+    # Filter the response and return the required data
+    return {"temp": response["current"]['temp'],  # Kelvin
+            "humidity": response["current"]['humidity'],
+            'wind_speed': response["current"]['wind_speed'],  # m/s
+            'wind_deg': response["current"]['wind_deg'],  # degrees
+            'weather': response["current"]['weather'][0]['main']}
+
+
 # Define a function to get the locations of ryegrass
 def get_locations(request):
     # Only keep last 3 years data
     now = timezone.now()
     check_date = now - relativedelta(years=3)
-    # The lat should between -33 and -40, lon should between 139 and 152
     ryegrass = Ryegrass.objects.filter(
         Q(rye_date__gte=check_date)
     ).values()
+
     return JsonResponse(list(ryegrass), safe=False)
 
 
@@ -165,7 +184,6 @@ def cloth_sug(request):
         form = ExposureTimeForm()
 
     return render(request, 'cloth_view.html', {'form': form})
-
 
 
 def symptom_relief_form(request):
