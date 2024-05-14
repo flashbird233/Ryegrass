@@ -141,6 +141,7 @@
                                         <label>
                                             Duration:
                                             <select name="duration" required>
+                                                <option value="" disabled selected>Select duration</option>
                                                 <option value="6">Every 6 hour</option>
                                                 <option value="8">Every 8 hour</option>
                                                 <option value="24">Every day</option>
@@ -152,6 +153,7 @@
                                         <label>
                                             End:
                                             <select name="end" required>
+                                                <option value="" disabled selected>Select end</option>
                                                 <option value="7">After a week</option>
                                                 <option value="14">After 2 weeks</option>
                                                 <option value="30">After a month</option>
@@ -402,6 +404,15 @@
                     end: form.querySelector('select[name="end"]').value
                 };
 
+                if (!formData.summary || !formData.startDate || !formData.time || !formData.duration || !formData.end) {
+
+
+
+
+                    alert("Please fill in all the fields.");
+                    return;
+                }
+
                 // Assuming reminderItems is defined elsewhere in your code
                 reminderItems.push(formData);
                 renderReminderItemsToDataList();
@@ -426,6 +437,7 @@
             // Iterate over reminderItems array and create options
             reminderItems.forEach(function (item) {
                 const option = document.createElement('dt');
+
                 option.innerText = `${item.time} - ${item.summary}`; // Assuming summary is the property to be displayed
                 option.style.color = item.color;
                 dataList.appendChild(option);
