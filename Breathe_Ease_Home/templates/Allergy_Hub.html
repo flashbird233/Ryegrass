@@ -122,25 +122,25 @@
                                         <label><input name="color" type="color" value="#8D00EB"/> </label>
                                         <label>
                                             Medicine name:
-                                            <input type="text" name="summary"/>
+                                            <input type="text" name="summary" required/>
                                         </label>
                                     </div>
                                     <div class="d-flex align-items-center gap-1 my-2">
                                         <label>
                                             Starting days to have medicine:
-                                            <input type="date" name="startDate"/>
+                                            <input type="date" name="startDate" required/>
                                         </label>
                                     </div>
                                     <div class="d-flex align-items-center gap-1 my-2">
                                         <label>
                                             Time to take:
-                                            <input type="time" name="time"/>
+                                            <input type="time" name="time" required/>
                                         </label>
                                     </div>
                                     <div class="d-flex align-items-center gap-1 my-2">
                                         <label>
                                             Duration:
-                                            <select name="duration">
+                                            <select name="duration" required>
                                                 <option value="6">Every 6 hour</option>
                                                 <option value="8">Every 8 hour</option>
                                                 <option value="24">Every day</option>
@@ -151,7 +151,7 @@
                                     <div class="d-flex align-items-center gap-1 my-2">
                                         <label>
                                             End:
-                                            <select name="end">
+                                            <select name="end" required>
                                                 <option value="7">After a week</option>
                                                 <option value="14">After 2 weeks</option>
                                                 <option value="30">After a month</option>
@@ -439,6 +439,17 @@
             handleStatisticsForm();
             handleAddItemToCalendarForm();
             renderChart(sampleRateData);
+
+            // Disable "Generate" button until all required fields are filled
+            const generateBtn = document.querySelector('#calendar_form button[type="submit"]');
+            const requiredFields = document.querySelectorAll('#add_item_to_calendar_form [required]');
+
+            requiredFields.forEach(field => {
+                field.addEventListener('change', function() {
+                    const allFilled = Array.from(requiredFields).every(field => field.value.trim() !== '');
+                    generateBtn.disabled = !allFilled;
+                });
+            });
         });
     </script>
 {% endblock %}
