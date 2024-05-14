@@ -205,9 +205,18 @@
                 navigator.geolocation.getCurrentPosition((position) => {
                     const {latitude, longitude} = position.coords;
                     map.setView([latitude, longitude], 14);
-                    L.marker([latitude, longitude]).addTo(map)
-                        .bindPopup('You are here')
-                        .openPopup();
+                    const geocoder = L.Control.Geocoder.nominatim();
+                    geocoder.reverse({
+                        lat: latitude,
+                        lng: longitude
+                    }, map.options.crs.scale(map.getZoom()), (results) => {
+                        const r = results[0];
+                        if (r) {
+                            L.marker([latitude, longitude]).addTo(map)
+                                .bindPopup('You are here: ' + r.name)
+                                .openPopup();
+                        }
+                    });
                 }, () => {
                     alert('Unable to retrieve your location');
                 });
