@@ -1,7 +1,7 @@
 {% extends 'base.html' %}
 {% load static %}
 {% block style %}
-    
+
 .tab-container .tab-bar{
   display: flex;
   align-items: center;
@@ -184,7 +184,7 @@
                                         <input type="text" style="display: none" name="data">
                                     </label>
                                     <div class="mt-2 px-4">
-                                        <button type="submit">Generate</button>
+                                        <button type="submit" id="generateBtn" disabled>Generate</button>
                                     </div>
                                 </form>
                             </div>
@@ -405,10 +405,6 @@
                 };
 
                 if (!formData.summary || !formData.startDate || !formData.time || !formData.duration || !formData.end) {
-
-
-
-
                     alert("Please fill in all the fields.");
                     return;
                 }
@@ -417,6 +413,7 @@
                 reminderItems.push(formData);
                 renderReminderItemsToDataList();
                 document.querySelector('#calendar_form input[name="data"]').value =JSON.stringify(reminderItems);
+                document.getElementById("generateBtn").disabled = false; // Enable generate button
             });
 
             form.addEventListener('reset', function (event) {
@@ -425,6 +422,7 @@
                 // Clear existing options
                 dataList.innerHTML = '';
                 document.querySelector('#calendar_form input[name="data"]').value ='';
+                document.getElementById("generateBtn").disabled = true; // Disable generate button
             });
         }
 
@@ -453,8 +451,8 @@
             renderChart(sampleRateData);
 
             // Disable "Generate" button until all required fields are filled
-            const generateBtn = document.querySelector('#calendar_form button[type="submit"]');
             const requiredFields = document.querySelectorAll('#add_item_to_calendar_form [required]');
+            const generateBtn = document.getElementById('generateBtn');
 
             requiredFields.forEach(field => {
                 field.addEventListener('change', function() {
