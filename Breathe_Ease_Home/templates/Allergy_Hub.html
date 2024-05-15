@@ -466,6 +466,14 @@
                     generateBtn.disabled = !allFilled;
                 });
             });
+
+            // Prevent generating calendar if no items added
+            generateBtn.addEventListener('click', function(event) {
+                if (reminderItems.length === 0) {
+                    event.preventDefault();
+                    alert("You have not added anything to be added to calendar.");
+                }
+            });
         });
     </script>
 {% endblock %}
