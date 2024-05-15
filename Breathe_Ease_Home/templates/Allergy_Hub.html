@@ -409,7 +409,13 @@
                     return;
                 }
 
-                // Assuming reminderItems is defined elsewhere in your code
+                // Check if the reminder already exists
+                if (reminderItems.some(item => JSON.stringify(item) === JSON.stringify(formData))) {
+                    alert("Reminder already exists.");
+                    return;
+                }
+
+                // Add the reminder to the list
                 reminderItems.push(formData);
                 renderReminderItemsToDataList();
                 document.querySelector('#calendar_form input[name="data"]').value =JSON.stringify(reminderItems);
