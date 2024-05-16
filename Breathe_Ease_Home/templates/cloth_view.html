@@ -2,188 +2,249 @@
 {% load static %}
 
 {% block content %}
-<style>
-  html, body {
-    height: 100%;
-    margin: 0;
-    background-color: #2F4F4F;
-    color: white;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    text-align: center;
-  }
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" integrity="sha512-ib8eSWN2ND6bbvXeKd2d+bQ5koPdZQJrfqHE1VU8tyKBLtk5yR9XhsuvXIkbXCQlCHAFdN02ZvNtLnmHK25xew==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            color: white;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            height: 100vh;
+            background-color: #2F4F4F;
+        }
+        .left, .right {
+            flex: 1;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        .left {
+            background-color: #2F4F4F;
+            padding: 20px;
+        }
+        .form-select, .btn {
+            margin: 8px 0;
+        }
+        .carousel-container {
+            width: 70%;
+            margin: auto;
+        }
+        .carousel-inner .carousel-item img {
+            width: 100%;
+            display: block;
+        }
+        .row {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            padding: 0 20px;
+        }
+    </style>
+</head>
 
-  section {
-    width: 100%;
-    max-width: 600px;
-    padding: 20px;
-    box-sizing: border-box;
-  }
-
-  #suggestions, .return-link {
-    margin-top: 20px;
-  }
-
-  .btn-primary {
-    display: inline-block;
-    text-decoration: none;
-    padding: 10px 20px;
-    background-color: #004d00;
-    color: white;
-    border: none;
-    border-radius: 5px;
-    margin-top: 20px;
-  }
-
-  .image-container {
-    position: fixed;
-    top: 20px;
-    right: 20px;
-    width: 300px;
-    height: 200px;
-  }
-
-  .image-container img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-  }
-</style>
-
-<section>
-    <p id="weather-info-line" style="display: none;"></p>
-    <p>Please enter your outdoor activity time (in hours).</p>
-    <label for="duration" class="form-label">Outdoor activity time:</label>
-    <select id="duration" class="form-select">
-        <option value="0">0 hours</option>
-        <option value="1">1 hour</option>
-        <option value="2">2 hours</option>
-        <option value="3">3 hours</option>
-        <option value="4">4 hours</option>
-        <option value="5">5 hours</option>
-        <option value="more">More than 5 hours</option>
-    </select>
-    <button onclick="getLocation()" class="btn btn-primary">Get My Location</button>
-    <div id="suggestions" style="display">
-        <h2>Clothing recommendations:</h2>
-        <p id="suggestionsText"></p>
+<body>
+    <div class="left">
+        <section style="width: 100%; height: 100%; display: flex; flex-direction: column;">
+            <div class="row" style="flex: 0 0 30%;">
+                <div id="weather-info" style="display: flex; align-items: center; justify-content: center; width: 100%;">
+                    <h2 style="margin-right: 10px;">Weather Information:</h2>
+                    <p id="temperature" style="margin: 0;"><span id="tempText"></span>&nbsp;<i class="fas fa-temperature-high" style="margin-right: 5px;"></i></p>
+                    <p id="wind-direction" style="margin: 0 20px;"><span id="windText"></span>&nbsp;<i class="fas fa-wind" style="margin-right: 5px;"></i></p>
+                    <p id="weather-condition" style="margin: 0;"><span id="weatherText"></span>&nbsp;<i class="fas fa-sun" style="margin-right: 5px;"></i></p>
+                </div>
+            </div>
+            <div class="row" style="flex: 0 0 1%;">
+                <p id="offSeasonText" style="color:  #e4c662; font-size: 24px;">
+                    It is not the season for ryegrass now, so no protection is needed.
+                </p>
+                <p>Click this button and you will get today's clothing recommendation information</p>
+            </div>
+            <div class="row" style="flex: 0 0 10%;">
+                <button onclick="getLocation()" class="btn btn-primary" style="width: 280px; padding: 6px 6px; border-radius: 4px; box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);">Get My Location</button>
+            </div>
+            <div class="row" style="flex: 0 0 5%;">
+                <p id="suggestionsText1"></p>
+            </div>
+            <div class="row" style="flex: 0 0 5%;">
+                <p id="suggestionsText2"></p>
+            </div>
+            <div class="row" style="flex: 0 0 5%;">
+                <p id="suggestionsText3"></p>
+            </div>
+            <div class="row" style="flex: 0 0 5%;">
+                <p id="suggestionsText4"></p>
+            </div>
+            <div class="row" style="flex: 0 0 1%;">
+                <button class="btn btn-secondary btn-sm" style="width: 250px; padding: 4px 4px; border-radius: 4px;" data-toggle="modal" data-target="#protectionModal">Learn more</button>
+            </div>
+            <div class="row" style="flex-grow: 1;">
+                <p>Click this button and you will get more advice on allergy protection</p>
+            </div>
+        </section>
     </div>
-{#    <div id="weather-info" style="display">#}
-{#        <h2>Weather Information:</h2>#}
-{#        <p id="temperature"></p>#}
-{#        <p id="humidity"></p>#}
-{#        <p id="wind-speed"></p>#}
-{#        <p id="wind-direction"></p>#}
-{#        <p id="weather-condition"></p>#}
-{#    </div>#}
-</section>
-
-<section>
-    <div class="flex-container">
-        <div class="carousel-container">
-            <div id="carouselExampleIndicators" class="carousel slide" data-ride="carousel">
-                <ol class="carousel-indicators">
-                    <li data-target="#carouselExampleIndicators" data-slide-to="0" class="active"></li>
-                    <li data-target="#carouselExampleIndicators" data-slide-to="1"></li>
-                    <li data-target="#carouselExampleIndicators" data-slide-to="2"></li>
-                </ol>
-                <div class="carousel-inner">
-                    <div class="carousel-item active">
-                        <img src="{% static 'images/1.jpeg' %}" class="d-block w-100" alt="...">
-                    </div>
-                    <div class="carousel-item">
-                        <img src="{% static 'images/2.jpg' %}" class="d-block w-100" alt="...">
-                    </div>
-                    <div class="carousel-item">
-                        <img src="{% static 'images/3.jpg' %}" class="d-block w-100" alt="...">
+    <div class="right">
+        <section>
+            <div class="flex-container">
+                <div class="carousel-container" style="margin-top: 10%;">
+                    <div id="carouselExampleIndicators" class="carousel slide" data-ride="carousel">
+                        <ol class="carousel-indicators">
+                            <li data-target="#carouselExampleIndicators" data-slide-to="0" class="active"></li>
+                            <li data-target="#carouselExampleIndicators" data-slide-to="1"></li>
+                            <li data-target="#carouselExampleIndicators" data-slide-to="2"></li>
+                        </ol>
+                        <div class="carousel-inner">
+                            <div class="carousel-item active">
+                                <img src="{% static 'images/1.jpeg' %}" class="d-block w-100" alt="...">
+                            </div>
+                            <div class="carousel-item">
+                                <img src="{% static 'images/2.jpg' %}" class="d-block w-100" alt="...">
+                            </div>
+                            <div class="carousel-item">
+                                <img src="{% static 'images/3.jpg' %}" class="d-block w-100" alt="...">
+                            </div>
+                        </div>
+                        <a class="carousel-control-prev" href="#carouselExampleIndicators" role="button" data-slide="prev">
+                            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                            <span class="sr-only">Previous</span>
+                        </a>
+                        <a class="carousel-control-next" href="#carouselExampleIndicators" role="button" data-slide="next">
+                            <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                            <span class="sr-only">Next</span>
+                        </a>
                     </div>
                 </div>
-                <a class="carousel-control-prev" href="#carouselExampleIndicators" role="button" data-slide="prev">
-                    <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-                    <span class="sr-only">Previous</span>
-                </a>
-                <a class="carousel-control-next" href="#carouselExampleIndicators" role="button" data-slide="next">
-                    <span class="carousel-control-next-icon" aria-hidden="true"></span>
-                    <span class="sr-only">Next</span>
-                </a>
+            </div>
+        </section>
+    </div>
+
+    <!-- Modal -->
+    <div class="modal fade" id="protectionModal" tabindex="-1" role="dialog" aria-labelledby="protectionModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content" style="background-color: #c5d5cb;">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="protectionModalLabel">Protection Information</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body" style="color: #a16468;">
+                    <p>Recommended protection during September to February:</p>
+                    <ul>
+                        <li><i class="fas fa-head-side-mask"></i> Masks: P2/N95 masks</li>
+                        <li><i class="fas fa-tshirt"></i> Clothing: Choose high-performance textiles like microporous materials or specially treated fabrics.</li>
+                        <li><i class="fas fa-glasses"></i> Eyewear: Sunglasses</li>
+                        <li><i class="fas fa-shower"></i> After exposure: Take a shower and change clothes immediately.</li>
+                    </ul>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                </div>
             </div>
         </div>
     </div>
-</section>
-
-
-
+</body>
 <script>
     // 获取相关元素
-    var durationSelect = document.getElementById('duration');
-    var suggestionsText = document.getElementById('suggestionsText');
-    var suggestionsDiv = document.getElementById('suggestions');
+    var suggestionsText1 = document.getElementById('suggestionsText1');
+    var suggestionsText2 = document.getElementById('suggestionsText2');
+    var suggestionsText3 = document.getElementById('suggestionsText3');
+    var suggestionsText4 = document.getElementById('suggestionsText4');
     var weatherInfo = document.getElementById('weather-info');
     var temperatureElement = document.getElementById('temperature');
-    var humidityElement = document.getElementById('humidity');
-    var windSpeedElement = document.getElementById('wind-speed');
+    var tempText = document.getElementById('tempText');
     var windDirectionElement = document.getElementById('wind-direction');
+    var windText = document.getElementById('windText');
     var weatherConditionElement = document.getElementById('weather-condition');
-    var weatherInfoLine = document.getElementById('weather-info-line');
+    var weatherText = document.getElementById('weatherText');
+    var offSeasonText = document.getElementById('offSeasonText');
 
     // 处理建议生成
-    function generateSuggestions(duration) {
+    function generateSuggestions(temperature, weatherCondition) {
         var suggestions = "";
-        if (duration === "0") {
-            suggestions = "No protective measures are necessary.";
-        } else if (duration === "1") {
-            suggestions = "Recommend wearing a surgical mask, sunglasses, long sleeves, trousers, and a hat. Choose tightly woven cotton or synthetic fabrics.";
-        } else if (duration === "2" || duration === "3" || duration === "4") {
-            suggestions = "Recommend wearing an N95 mask, sunglasses, long sleeves, trousers, gloves, and a hat. Post-exposure, it's advised to wash promptly. Opt for high-performance textiles like microporous materials or specially treated fabrics.";
-        } else if (duration === "5" || duration === "more") {
-            suggestions = "Advise using an N95 mask, sunglasses, long sleeves, trousers, gloves, and a hat with a substantial brim. After leaving the allergen area, take a shower and change clothes immediately. For clothing material, medical-grade protective garments are preferred.";
+
+        // 根据温度和天气状况添加着装建议
+        if (temperature <= 5) {
+            suggestions += "Top: Wear thermal underwear, a wool or fleece sweater as a middle layer, and a heavy down jacket or windbreaker as the outer layer.\n   Bottom: Thermal underwear paired with thick wool pants or wind pants.";
+        } else if (temperature > 5 && temperature <= 10) {
+            suggestions += "Top: Wear thermal underwear with a thick sweater or knitted wool top, and a windbreaker or lightweight down jacket on top.\n   Bottom: Fleece-lined jeans or insulated trousers.";
+        } else if (temperature > 10 && temperature <= 15) {
+            suggestions += "Top: Wear a thin sweater or sweatshirt, and an optional lightweight jacket.\n   Bottom: Regular jeans or cotton pants.";
+        } else if (temperature > 15 && temperature <= 20) {
+            suggestions += "Top: Wear a single layer of long-sleeved shirt or thin sweater, with an optional light jacket.\n   Bottom: Trousers or skirt according to personal preference.";
+        } else if (temperature > 20 && temperature <= 25) {
+            suggestions += "Top: Wear a single layer T-shirt or short-sleeved shirt, with an optional thin sweatshirt for cooler times.\n   Bottom: Trousers or shorts, made of lightweight fabrics.";
+        } else if (temperature > 25 && temperature <= 30) {
+            suggestions += "Top: Wear a breathable short-sleeved shirt or lightweight sweatshirt, suitable for air-conditioned indoor environments.\n   Bottom: Shorts or lightweight trousers.";
+        } else if (temperature > 30 && temperature <= 35) {
+            suggestions += "Top: Wear a lightweight short-sleeved T-shirt, preferably breathable materials like cotton or linen.\n   Bottom: Loose-fitting shorts or lightweight trousers, avoid tight-fitting clothing.";
+        } else if (temperature > 35 && temperature <= 40) {
+            suggestions += "Top: Wear a highly breathable sleeveless top or tank top.\n   Bottom: Lightweight shorts or skirt, choose natural fabrics like linen or cotton.";
         }
-        return suggestions;
+
+        if (weatherCondition.toLowerCase().includes("rain")) {
+            suggestions += "\n\nReminder: Weather conditions indicate rain, please bring an umbrella or rainwear.";
+        }
+
+        return suggestions.split('\n');
     }
 
-// 获取天气信息
-function getWeatherData(latitude, longitude) {
+    // 获取天气信息
+    function getWeatherData(latitude, longitude) {
+        var latitudeStr = latitude.toString();
+        var longitudeStr = longitude.toString();
+        var key = 'd32542473437f300dfdec104552b7f65'; // 替换为你自己的 OpenWeatherMap API 密钥
+        var main_url = "https://api.openweathermap.org/data/2.5/weather?";
+        var req_url = main_url + "lat=" + latitude + "&lon=" + longitude + "&appid=" + key + "&units=metric";
+        console.log('req_url is: ' + req_url);
 
-    console.log('开始获取天气信息:' );
+        fetch(req_url)
+            .then(response => response.json())
+            .then(data => {
+                var temperature = data.main.temp;
+                var humidity = data.main.humidity;
+                var windSpeed = data.wind.speed;
+                var windDeg = data.wind.deg;
+                var weatherCondition = data.weather[0].main;
 
-    {#latitude = latitude.toFixed(2);#}
-    {#longitude = longitude.toFixed(2);#}
-    var latitudeStr = latitude.toString();
-    var longitudeStr = longitude.toString();
-    {#var key = 'c333242c1b9a686421d34d0c78a4c403';#}
-    var key = 'd32542473437f300dfdec104552b7f65';
-    var main_url = "https://api.openweathermap.org/data/3.0/onecall?";
-    var req_url = main_url + "lat=" + latitude + "&lon=" + longitude + "&appid=" + key;
-    console.log('lat= is: ' + latitude);
-    console.log('lon= is: ' + longitude);
-    console.log('req_url is: ' + req_url);
+                // 更新 weather-info 内的各个元素
+                tempText.textContent = `${temperature.toFixed(1)}°C`;
+                windText.textContent = `${windDeg}° direction`;
+                weatherText.textContent = `${weatherCondition}`;
 
-    fetch(req_url)
-        .then(response => response.json())
-        .then(data => {
-            var temperature = data.current.temp - 273.15; // 转换为摄氏度
-            var humidity = data.current.humidity;
-            var windSpeed = data.current.wind_speed; // m/s
-            var windDeg = data.current.wind_deg; // degrees
-            var weatherCondition = data.current.weather[0].main;
+                weatherInfo.style.display = 'flex'; // 显示 weather-info div
 
-            console.log('111111111111111' );
+                // 生成建议
+                var suggestions = generateSuggestions(temperature, weatherCondition);
+                suggestionsText1.innerText = suggestions[0] || '';
+                suggestionsText2.innerText = suggestions[1] || '';
+                suggestionsText3.innerText = suggestions[2] || '';
+                suggestionsText4.innerText = suggestions.slice(3).join('\n') || '';
 
-            var weatherInfoText = `Temperature: ${temperature.toFixed(1)}°C, Humidity: ${humidity}%, Wind Speed: ${windSpeed} m/s, Wind Direction: ${windDeg}°, Weather Condition: ${weatherCondition}`;
-            weatherInfoLine.textContent = weatherInfoText;
-            weatherInfoLine.style.display = 'block'; // 显示 weather-info-line
+                // 如果当前不是黑麦草季节，则显示相应文本
+                if (!isBlackOatSeason(temperature)) {
+                    offSeasonText.style.display = 'block';
+                } else {
+                    offSeasonText.style.display = 'none';
+                }
+            })
+            .catch(error => console.error('Error:', error));
+    }
 
-            temperatureElement.textContent = `Temperature: ${temperature.toFixed(1)}°C`;
-            humidityElement.textContent = `Humidity: ${humidity}%`;
-            windSpeedElement.textContent = `Wind Speed: ${windSpeed} m/s`;
-            windDirectionElement.textContent = `Wind Direction: ${windDeg}°`;
-            weatherConditionElement.textContent = `Weather Condition: ${weatherCondition}`;
-
-            weatherInfo.style.display = 'block'; // 显示 weather-info div
-        })
-        .catch(error => console.error('Error:', error));
-}
+    // 判断是否为黑麦草季节
+    function isBlackOatSeason(temperature) {
+        // 你可以根据实际情况调整这个函数的逻辑
+        // 这里假设温度在 10°C 到 25°C 之间为黑麦草季节
+        return temperature >= 10 && temperature <= 25;
+    }
 
     // 获取用户位置
     function getLocation() {
@@ -199,54 +260,17 @@ function getWeatherData(latitude, longitude) {
         var latitude = position.coords.latitude;
         var longitude = position.coords.longitude;
 
-        console.log('开始获取信息' );
-        console.log('Latitude: ' + latitude + ', Longitude: ' + longitude);
-
-        console.log('11111' );
-
-        // 获取选择的户外活动时间
-        var duration = durationSelect.value;
-        console.log('222222222222' );
-        // 生成建议
-        var suggestions = generateSuggestions(duration);
-        suggestionsText.innerText = suggestions;
-        suggestionsDiv.style.display = 'block';
-
-        console.log('开始获取天气信息--------------' );
-
         // 获取天气信息
         getWeatherData(latitude, longitude);
-
-        // 发送 AJAX 请求到 get_data 视图函数
-        fetch('/get_data', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'X-CSRFToken': '{{ csrf_token }}'
-            },
-            body: JSON.stringify({ latitude: latitude, longitude: longitude })
-        })
-        .then(response => response.json())
-        .then(data => {
-            console.log('Data:', data);
-            // 在这里更新前端的显示,依据实际返回的数据结构
-        })
-        .catch(error => console.error('Error:', error));
     }
-
-    // 监听户外活动时间选择变化
-    durationSelect.addEventListener('change', function() {
-        var duration = this.value;
-        var suggestions = generateSuggestions(duration);
-        suggestionsText.innerText = suggestions;
-        suggestionsDiv.style.display = 'block';
-    });
 
     // 初始化走马灯轮播图
     $('.carousel').carousel({
         interval: 5000 // 自动轮播间隔时间（以毫秒为单位）
     });
 </script>
+
+<!-- Bootstrap 和相关的 JavaScript 库 -->
 
 <!-- Bootstrap 和相关的 JavaScript 库 -->
 <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
