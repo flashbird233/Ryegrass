@@ -59,6 +59,14 @@
     <h1 style="color: white; text-align: center; margin-top: 6%">Check the Ryegrass Location in VIC</h1>
     <!-- Display the map -->
     <div style="display: flex; justify-content: flex-end; width: 85%; margin: auto">
+        <img src="{% static 'images/green_region.png'%}"
+        style="width: 20px; height: 20px">
+        <a style="color: white; margin-left: 5px; font-size: 15px">
+            Low Risk Region</a>
+        <img src="{% static 'images/red_region.png'%}"
+        style="width: 20px; height: 20px">
+        <a style="color: white; margin-left: 5px; font-size: 15px">
+            High Risk Region</a>
         <select id="travel-mode">
             <option value="driving">Driving</option>
             <option value="cycling">Cycling</option>
