@@ -99,11 +99,11 @@ def get_locations(request):
         radius = 0.5  # km the radius of the risk area
         extend_length = 1.5  # km the length of the wind direction
         # Calculate the shape points
-        shape_points = ['M', cal_point(center_lat, center_lon, radius, wind_deg - 90),
-                        'Q', cal_point(center_lat, center_lon, radius * sqrt(2), wind_deg - 135),
-                        cal_point(center_lat, center_lon, radius, wind_deg - 180),
-                        'T', cal_point(center_lat, center_lon, radius, wind_deg - 270),
-                        'L', cal_point(center_lat, center_lon, extend_length, wind_deg),
+        shape_points = ['M', cal_point(center_lat, center_lon, radius, wind_deg + 90),
+                        'Q', cal_point(center_lat, center_lon, radius * sqrt(2), wind_deg + 45),
+                        cal_point(center_lat, center_lon, radius, wind_deg),
+                        'T', cal_point(center_lat, center_lon, radius, wind_deg - 90),
+                        'L', cal_point(center_lat, center_lon, extend_length, wind_deg - 180),
                         'Z']
         # Get the current month and current weather
         weather = weather_info['weather']
