@@ -103,7 +103,11 @@ def get_locations(request):
                         'Q', cal_point(center_lat, center_lon, radius * sqrt(2), wind_deg + 45),
                         cal_point(center_lat, center_lon, radius, wind_deg),
                         'T', cal_point(center_lat, center_lon, radius, wind_deg - 90),
-                        'L', cal_point(center_lat, center_lon, extend_length, wind_deg - 180),
+                        'L', cal_point(center_lat, center_lon, extend_length, wind_deg - 150),
+                        'Q', cal_point(center_lat, center_lon, extend_length, wind_deg - 165),
+                        cal_point(center_lat, center_lon, extend_length, wind_deg - 180),
+                        'Q', cal_point(center_lat, center_lon, extend_length, wind_deg - 195),
+                        cal_point(center_lat, center_lon, extend_length, wind_deg - 210),
                         'Z']
         # Get the current month and current weather
         weather = weather_info['weather']
